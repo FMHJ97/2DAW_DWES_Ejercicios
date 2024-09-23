@@ -3,9 +3,15 @@
     <head>
         <title>Exercise 02</title>
     </head>
+    <style>
+        table, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+    </style>
     <body>
         
-        <table border="1px solid black" style="border-collapse: collapse";>
+        <table>
             
             <?php
 
