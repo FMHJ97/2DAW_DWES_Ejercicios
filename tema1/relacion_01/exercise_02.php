@@ -7,9 +7,13 @@
         table, td {
             border: 1px solid black;
             border-collapse: collapse;
+            font-size: 1.5em;
+            padding: 1em;            
         }
     </style>
     <body>
+        
+        <h1>Tabla de Números Impares</h1><br>
         
         <table>
             
