@@ -27,10 +27,10 @@
             
             echo "<h2>Elementos del array</h2>";
             // Mostramos todos los elementos del array con sus índices.
-            foreach ($colores as $key => $value) {
-                echo "<p>[".$key."] : ".$value."</p>";
+            for ($i = 1; $i < count($colores); $i++) {
+                echo "<p>[".$i."] : ".$colores[$i]."</p>";
             }
-        
+            
         ?>
         
     </body>
