@@ -32,6 +32,11 @@
                          * Elimina aquellos elementos desde la posición indicada.
                          * Al indicar el valor 1, informamos cuantos elementos
                          * queremos eliminar. **REAJUSTA LAS KEYS DEL ARRAY**.
+                         * 
+                         * En este caso, no es relevante la correlación índice y valor.
+                         * Sin embargo, en los casos que si sea, el reajuste de
+                         * índices puede ser mala idea (pueden aportar info sobre
+                         * el contenido).
                          */
                         array_splice($array, $j, 1);
                     }

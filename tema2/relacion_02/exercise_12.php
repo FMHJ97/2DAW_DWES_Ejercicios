@@ -16,11 +16,19 @@
             # Creamos el array.
             $array=array(12,42,13,25,33);
             
+            # Variable suma.
+            $suma = 0;
+            
             # Sumamos todos los elementos del array.
-            $sum= array_sum($array);
+            for ($i = 0; $i < count($array); $i++) {
+                $suma += $array[$i];
+            }            
+            
+//            Alternativa
+//            $suma= array_sum($array);
             
             # Mostramos el resultado.
-            echo "<p>La suma total es ".$sum."</p>";
+            echo "<p>La suma total es ".$suma."</p>";
         ?>
         
     </body>
