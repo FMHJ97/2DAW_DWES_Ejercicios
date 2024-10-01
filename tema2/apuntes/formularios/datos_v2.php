@@ -19,5 +19,22 @@
         <!-- Para enviar datos a través de un enlace.
         Se enviará por GET (defecto)-->
         <a href="procesa.php?nombre=pepe&apellido=garcia">Ir a procesa</a>
+        
+        <!-- Dará errores debido a la ejecución secuencial.
+        La primera solicitud al servidor debe cargar el contenido HTML primero.
+        Y en la siguiente solicitud, el posible código a ejecutar.
+        Para evitar dichos errores, utilizaremos la función isset()-->
+        <?php
+            # Si se ha enviado el formulario, ejecutará el siguiente código.
+            if (isset($_POST['enviar'])) {
+                # Muestra los valores independientemente del método.
+                echo $_REQUEST['nombre']." - ".$_REQUEST['apellido']."<br>";
+
+                # Si seleccionamos varios checkbox, debemos recorrer el array.
+                foreach ($_POST['modulos'] as $value) {
+                    echo $value."<br>";
+                }                
+            }            
+        ?>
     </body>
 </html>
