@@ -1,17 +1,15 @@
+<!doctype html>
 <html>
     <head>
         <title>Ejercicio 03 - Pedido</title>
     </head>
     <body>
-        
         <?php
-        
+            // En caso de hacer click en Formulario Datos Personales.
             if (isset($_POST['next1'])) {
-                
                 ?>
-        
                 <h1>Datos Pedido</h1>
-                <form action="<?php $_SERVER['PHP_SELF'] ?>" method="post">
+                <form action="<?php $_SERVER['PHP_SELF']; ?>" method="post">
                     <p>Dirección: <input type="text" name="address" value="<?php if (isset($_POST['cancel'])) echo $_POST['address']; ?>"></p>
                     <p>Nº de Tarjeta: <input type="text" name="numberCard" value="<?php if (isset($_POST['cancel'])) echo $_POST['numberCard']; ?>"></p>
                     <input type="submit" name="next2" value="Siguiente">
@@ -19,12 +17,10 @@
                     <input type="hidden" name="name" value="<?php echo $_POST['name']; ?>">
                     <input type="hidden" name="surname" value="<?php echo $_POST['surname']; ?>">
                 </form>
-
                 <?php
+            // En caso de hacer click en Formulario Pedido.
             } else if (isset ($_POST['next2'])) {
-                
                 ?>
-                
                 <h1>Confirmación de Datos</h1>
                 <?php
                     echo "<p>Nombre: ".$_POST['name']."</p>";
@@ -33,7 +29,9 @@
                     echo "<p>Nº de Tarjeta: ".$_POST['numberCard']."</p>";
                 ?>
                 <form action="<?php $_SERVER['PHP_SELF']; ?>" method="post">
+                    <!-- Guardará los datos mostrados para volver a los formularios anteriores. -->
                     <input type="submit" name="cancel" value="Cancelar">
+                    <!-- Se llamará así mismo, por lo que mostrará el primer formulario (vacío). -->
                     <input type="submit" name="send" value="Confirmar">
                     <!-- Datos guardados del anterior formulario -->
                     <input type="hidden" name="name" value="<?php echo $_POST['name']; ?>">
@@ -41,12 +39,11 @@
                     <input type="hidden" name="address" value="<?php echo $_POST['address']; ?>">
                     <input type="hidden" name="numberCard" value="<?php echo $_POST['numberCard']; ?>">
                 </form>
-                
                 <?php
-            } else {
-                
+            // Muestra el primer formulario, vacío o con datos.
+            // Depende de si hemos pulsado Confirmar o Cancelar.
+            } else {    
                 ?>
-                
                 <h1>Datos Personales</h1>
                 <form action="<?php $_SERVER['PHP_SELF']; ?>" method="post">
                     <p>Nombre: <input type="text" name="name" value="<?php if (isset($_POST['cancel'])) echo $_POST['name']; ?>"></p>
@@ -56,13 +53,10 @@
                     <input type="hidden" name="cancel" value="<?php if (isset($_POST['cancel'])) echo $_POST['cancel']; ?>">
                     <input type="hidden" name="address" value="<?php if (isset($_POST['cancel'])) echo $_POST['address']; ?>">
                     <input type="hidden" name="numberCard" value="<?php if (isset($_POST['cancel'])) echo $_POST['numberCard']; ?>">
-                </form>
-                
+                </form>            
                 <?php
             }
-        
         ?>
-        
     </body>
 </html>
 
