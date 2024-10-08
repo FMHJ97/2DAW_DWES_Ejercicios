@@ -18,6 +18,7 @@
                         <!-- Datos guardados -->
                         <input type="hidden" name="name" value="<?php echo $_POST['name']; ?>">
                         <input type="hidden" name="surname" value="<?php echo $_POST['surname']; ?>">
+                        <!-- Pasa los elementos de un array a un string, separados por un separador personalizado. -->
                         <input type="hidden" name="idiomas" value="<?php echo implode(", ", $_POST['idiomas']); ?>">
                     </form>
                 <?php
