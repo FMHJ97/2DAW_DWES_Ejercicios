@@ -1,43 +1,85 @@
 <html>
     <head>
         <title>Relación 3 - Operaciones con Matrices</title>
+        <style>
+            table, td {
+                border-collapse: collapse;
+                border: 2px solid black;
+            }
+            td {
+                font-size: 2em;
+                padding: 1em;
+            }
+            p {
+                font-size: 1.5em;
+            }
+        </style>
     </head>
     <body>
         <?php
-            // Variable con la opción elegida.
-            $option = intval($_REQUEST['id']);
+            // Acceso a las funciones del fichero "funciones.php".
+            require_once 'funciones.php';
+        
+            // Variable para la opción elegida en 'index.php'.
+            $option = 0;
+            // Si provenimos del fichero anterior, asignaremos el valor correspondiente.
+            // En caso contrario, significa que hemos vuelto al fichero actual
+            // desde la pantalla 'Sumar Diagonal Principal', es decir, la matriz NO era cuadrada.
+            // Por tanto, asignamos el valor correspondiente a dicha opción para volver a intentarlo.
+            if (isset($_REQUEST['id'])) $option = intval($_REQUEST['id']);
+            else $option = 4;
         
             // Validation flags.
-            $f_row = false; $f_column = false;
-            $f_square = false; 
+            $f_rows = false; $f_columns = false;
+            $f_square = false;  # Bandera destinada a opción 4 ($option).
             
             // Data Validation.
             if (isset($_POST['send'])) {
                 // Para este caso, podemos utilizar simplemente is_numeric().
                 // La función is_int() no recoge valores con comillas.
-                if (!empty($_POST['row']) && is_numeric($_POST['row']) && $_POST['row'] > 0) $f_row = true;
-                if (!empty($_POST['column']) && is_int((int)$_POST['column']) && $_POST['column'] > 0) $f_column = true;
-                if ($f_row && $f_column && ($_POST['row'] === $_POST['column']) && $option == 4) $f_square = true;
+                if (!empty($_POST['rows']) && is_numeric($_POST['rows']) && $_POST['rows'] > 0) $f_rows = true;
+                if (!empty($_POST['columns']) && is_int((int)$_POST['columns']) && $_POST['columns'] > 0) $f_columns = true;
+                // Bandera que comprueba si la matriz es cuadrada (suma diagonal principal).
+                if ($f_rows && $f_columns && ($_POST['rows'] === $_POST['columns']) && $option == 4) $f_square = true;
             }
             
-            if (isset($_POST['send']) && $f_row && $f_column) {
+            if (isset($_POST['send']) && $f_rows && $f_columns) {
+                // Generamos y mostramos la matriz generada.
+                echo "<h1>Matriz Generada</h1>";
+                $matriz = generarMatriz($_POST['rows'], $_POST['columns']);
+                mostrarMatriz($matriz);
                 
                 // Según la opción elegida en el menú principal($option).
                 switch ($option) {
                     case 1:
                         // Calcular la suma de las filas
+                        calcularSumaFilas($matriz);
+                        echo "<a href='index.php'>Volver a Inicio</a>";
                         break;
                     case 2:
-                        // Calcular la suma de las filas
+                        // Calcular la suma de las columnas
+                        calcularSumaColumnas($matriz);
+                        echo "<a href='index.php'>Volver a Inicio</a>";
                         break;
                     case 3:
-                        // Calcular la suma de las filas
+                        // Calcular la suma de las filas y las columnas
+                        calcularSumaTotalFilasColumnas($matriz);
+                        echo "<a href='index.php'>Volver a Inicio</a>";
                         break;
                     case 4:
-                        // Calcular la suma de las filas
+                        // Suma de la diagonal principal
+                        if ($f_square) {
+                            calcularDiagonalPrincipal($matriz);
+                            echo "<a href='index.php'>Volver a Inicio</a>";
+                        } else {
+                            echo "<p><span style='color: red'>ERROR</span>. La matriz debe ser cuadrada para poder calcular su diagonal principal</p>";
+                            echo "<a href='calcula.php'>Volver a atrás</a>";
+                        }
                         break;
                     case 5:
-                        // Calcular la suma de las filas
+                        // Calcular matriz traspuesta
+                        calcularMatrizTraspuesta($matriz);
+                        echo "<br><a href='index.php'>Volver a Inicio</a>";
                         break;                    
                 }
                 
@@ -46,13 +88,13 @@
                 ?>
                 <h1>Matriz a generar</h1>
                 <form action="" method="post">
-                    <p>Filas: <input type="number" name="row" value="<?php if ($f_row) echo $_POST['row']; ?>">
+                    <p>Filas: <input type="number" name="rows" value="<?php if ($f_rows) echo $_POST['rows']; ?>">
                     <!-- Show Error -->
-                    <?php if(isset($_POST['send']) && !$f_row) echo "<span style='color: red'>Introduzca un valor válido para las filas</span>"; ?>
+                    <?php if(isset($_POST['send']) && !$f_rows) echo "<span style='color: red'>Introduzca un valor válido para las filas</span>"; ?>
                     </p>
-                    <p>Columnas: <input type="number" name="column" value="<?php if ($f_column) echo $_POST['column']; ?>">
+                    <p>Columnas: <input type="number" name="columns" value="<?php if ($f_columns) echo $_POST['columns']; ?>">
                     <!-- Show Error -->
-                    <?php if(isset($_POST['send']) && !$f_column) echo "<span style='color: red'>Introduzca un valor válido para las columnas</span>"; ?>                    
+                    <?php if(isset($_POST['send']) && !$f_columns) echo "<span style='color: red'>Introduzca un valor válido para las columnas</span>"; ?>                    
                     </p>
                     <input type="submit" name="send" value="Enviar">
                 </form>        
