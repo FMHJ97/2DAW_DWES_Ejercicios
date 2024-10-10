@@ -6,6 +6,9 @@
      */
     function generarMatriz($rows, $cols) {
         // Inicializamos la matriz.
+        // NO ES NECESARIO DECLARAR LA MATRIZ.
+        // En PHP, toda variable se inicializa al asignarle valores (cualquier tipo de dato).
+        // Es decir, PHP trabaja dinámicamente.
         $matriz = array();
         
         // Rellenamos la matriz de valores a través de dos bucles.
