@@ -25,6 +25,9 @@
                 Producto:
                 <select name="producto">
                     <?php
+                        // Guarda el producto seleccionado si se envía el formulario
+                        $selectedItem = isset($_POST['producto']) ? $_POST['producto'] : '';
+                    
                         try {
                             $result = $conex->query("SELECT * FROM producto");
                             // Recorremos las filas obtenidas de la consulta.
@@ -44,24 +47,29 @@
         
         <div id="contenido">
             <?php
-                if (isset($_POST['show'])) {
-                    // Guarda el producto seleccionado si se envía el formulario
-                    $selectedItem = isset($_POST['producto']) ? $_POST['producto'] : '';                     
-                    
-                    // Consulta la tienda y stock por producto
-                    $stock_result = $conex->query(
-                            "SELECT tienda, unidades FROM stock WHERE producto='$_POST[producto]'");
-                    
-                    while ($row = $stock_result->fetch_object()) {
-                        // Consulta el nombre de la tienda según el código de tienda obtenido en el stock
-                        $tienda_result = $conex->query(
-                                "SELECT nombre FROM tienda WHERE cod = '$row->tienda'");
-                        
-                        if ($tienda = $tienda_result->fetch_object()) {
-                            echo "<p>Tienda $tienda->nombre = $row->unidades unidades</p>";
+                if (isset($_POST['show'])) {                     
+                    try {
+                        // Consulta la tienda y stock por producto
+                        $stock_result = $conex->query(
+                                "SELECT tienda, unidades FROM stock WHERE producto='$_POST[producto]'");
+
+                        while ($row = $stock_result->fetch_object()) {
+                            // Consulta el nombre de la tienda según el código de tienda obtenido en el stock
+                            $tienda_result = $conex->query(
+                                    "SELECT nombre FROM tienda WHERE cod = '$row->tienda'");
+
+                            if ($tienda = $tienda_result->fetch_object()) {
+                                echo "<p>Tienda $tienda->nombre = $row->unidades unidades</p>";
+                            }
                         }
                     }
+                    catch (Exception $ex) {
+                        die($ex->getMessage());
+                    }
                 }
+                
+                // Cerramos la conexión.
+                $conex->close();
             ?>
         </div>
         
