@@ -35,11 +35,20 @@
                         $stmt->bind_param("ss", $dni,$value);
                         $stmt->execute();
                     }
+                    // Llegados a este punto, se han realizado las instrucciones
+                    // correctamente.
+                    // Confirmamos las operaciones.
+                    $conex->commit();
+                    echo "Registro agregado correctamente!";
                 }
                 catch (Exception $ex) {
-                    
+                    echo "ERROR. NO SE HAN REALIZADO INSERCIONES EN LA BD!";
+                    // Deshacemos los cambios realizados.
+                    $conex->rollback();
                 }
-                
+                // Reestablecemos el autocommit y cerramos la conexión.
+                $conex->autocommit(true);
+                $conex->close();               
             }
         ?>
         
