@@ -58,15 +58,17 @@
                         while ($row = $stock_result->fetch_object()) {
                             // Consulta el nombre de la tienda según el código de tienda obtenido en el stock
                             $tienda_result = $conex->query(
-                                    "SELECT nombre FROM tienda WHERE cod = '$row->tienda'");
+                                    "SELECT nombre FROM tienda WHERE cod = $row->tienda");
 
                             if ($tienda = $tienda_result->fetch_object()) {
-                                // En el name del input, utilizaremos un array.
-                                echo "<p>Tienda $tienda->nombre: <input type='number' name='units[]' value='$row->unidades'> unidades</p>";
-                                echo "<input type='hidden' name='product' value='$_POST[producto]'>";
-                                echo "<input type='hidden' name='shops[]' value='$row'>";
+                                // En el name del input, utilizaremos un array Asociativo.
+                                // Usaremos el código de tienda como índice o key,
+                                // asociando las unidades de dicha tienda con un determinado producto.
+                                echo "<p>Tienda $tienda->nombre: <input type='number' name='units[$row->tienda]' value=$row->unidades> unidades</p>";
                             }
                         }
+                        // Guardamos el código del producto actual.
+                        echo "<input type='hidden' name='producto' value='$_POST[producto]'>";
                         echo "<input type='submit' name='update' value='Actualizar'>";
                         echo "</form>";
                     }
@@ -81,11 +83,14 @@
                         $stmt = $conex->prepare(
                                 "UPDATE stock SET unidades = ? WHERE producto = ? AND tienda = ?");
                         
-                        foreach ($_POST['shops'] as $key => $value) {
-                            $_POST['shops'][$key]
+                        foreach ($_POST['units'] as $key => $value) {
+                            $stmt->bind_param('isi', $value,$_POST['producto'],$key);
+                            $stmt->execute();
                         }
-                        $stmt->bind_param('isi', );
+                        echo "ACTUALIZACIÓN REALIZADA!";
+                        
                     } catch (Exception $ex) {
+                        echo "NO SE HA PODIDO ACTUALIZAR LA INFORMACIÓN<br>";
                         die($ex->getMessage());
                     }
                 }
