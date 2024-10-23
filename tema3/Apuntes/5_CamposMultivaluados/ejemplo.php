@@ -42,15 +42,36 @@
             foreach ($_POST['idiomas'] as $value) {
                 $idiomas += $value;
             }
-            
             // Sacamos los elementos del array en un string separados por guiones.
             $estudios = implode("-", $_POST['estudios']);
+            // Realizamos la consulta.
             $conex->query(
-                    "INSERT INTO empleados VALUES ('$_POST[dni]','$_POST[nombre]','$_POST[apellidos]',"
-                    . "$_POST[salario],'$_POST[usuario]','$_POST[password]',$idiomas,$estudios)");
-            
+                    "INSERT INTO marketing VALUES ('$_POST[dni]','$_POST[nombre]','$_POST[apellidos]',"
+                    . "$_POST[salario],'$_POST[usuario]','$_POST[password]','$idiomas','$estudios')");
         } catch (Exception $ex) {
             die($ex->getMessage());
+        }
+        echo "<br>Registro insertado correctamente";
+        $conex->close();
+    }
+    
+    if (isset($_POST['recuperar'])) {
+        try {
+            $conex = new mysqli("localhost","dwes","abc123.","empleados");
+            $conex->set_charset("utf8mb4");
+            $result = $conex->query("SELECT * FROM marketing");
+        } catch (Exception $ex) {
+            die($ex->getMessage());
+        }
+        
+        if ($result->num_rows) {
+            while ($fila = $result->fetch_object()) {
+                echo "<p>Nombre: ".$fila->Nombre."</p>";
+                echo "<p>Apellidos: ".$fila->Apellidos."</p>";
+                echo "<p>Idiomas: ".$fila->idiomas."</p>";
+                echo "<p>Estudios: ".$fila->estudios."</p>";
+                echo "<====================================>";
+            }
         }
     }
 ?>

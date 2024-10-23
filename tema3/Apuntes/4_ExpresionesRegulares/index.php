@@ -22,7 +22,7 @@
                     // Comprobamos si la fecha es válida.
                     if (checkdate($array[1], $array[0], $array[2])) $f_fecha=true;
                 }
-                if (preg_match('/^[\w\-\+]+[@][\w\-\+]+[.](com|es|org)/i', $_POST['email'])) $f_email=true;
+                if (preg_match('/^[\w\-\+\.]+[@][\w\-\+\.]+[.](com|es|org)/i', $_POST['email'])) $f_email=true;
                 if (preg_match('/^\d+$/', $_POST['edad']) && $_POST['edad'] >= 18) $f_edad=true;
                 // Si todas las banderas están a true, validación global correcta.
                 if ($f_dni && $f_nombre && $f_fecha && $f_email && $f_edad) $main_flag=true;
