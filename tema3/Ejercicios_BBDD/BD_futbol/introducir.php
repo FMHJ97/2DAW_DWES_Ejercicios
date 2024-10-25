@@ -4,6 +4,12 @@
     </head>
     <body>
         <?php
+        // Redirigimos al index en caso de entrar directamente aquí.
+        if (!isset($_GET['id'])) {
+            header("Location: index.php");
+            exit();
+        }
+        
         // Validation flags.
         $f_dni=false; $f_nombre=false; $f_dorsal=false; $f_posicion=false;
         $f_equipo=false; $f_goles=false;
@@ -13,10 +19,10 @@
         if(isset($_POST['insertar'])) {
             // Format validation.
             if (preg_match('/^\d{8}[a-zA-Z]$/', $_POST['dni'])) $f_dni=true;
-            if (preg_match('/^[a-zA-Z]+\s?[a-zA-Z]+$/', $_POST['nombre'])) $f_nombre=true;
+            if (preg_match('/^([a-zA-Z]+\s?)+$/', $_POST['nombre'])) $f_nombre=true;
             if (isset($_POST['dorsal'])) $f_dorsal=true;
             if (isset($_POST['posicion'])) $f_posicion=true;
-            if (preg_match('/^[a-zA-Z]+\s?[a-zA-Z]+$/', $_POST['equipo'])) $f_equipo=true;
+            if (preg_match('/^([a-zA-Z]+\s?)+$/', $_POST['equipo'])) $f_equipo=true;
             if (preg_match('/^\d+$/', $_POST['goles'])) $f_goles=true;
             
             // Main validation.
@@ -46,7 +52,8 @@
                 die($ex->getMessage());
             }
             // Llegados a este punto, se ha realizado la inserción.
-            echo "REGISTRO INSERTADO CORRECTAMENTE!";
+            // Mostramos el mensaje en el menú principal (index.php).
+            header("Location: index.php?msg=REGISTRO INSERTADO CORRECTAMENTE!");
             $conex->close();
         } else {
             ?>
@@ -89,12 +96,12 @@
                     <!-- Show Error -->
                     <?php if (isset($_POST['insertar']) && !$f_equipo) echo "<span style='color:red'>No puede estar vacío.</span>"; ?>
                 </p>
-                <p>Número de goles: <input type="text" name="goles">
+                <p>Número de goles: <input type="text" name="goles" value="<?php if ($f_goles) echo $_POST['goles']; ?>">
                     <!-- Show Error -->
                     <?php if (isset($_POST['insertar']) && !$f_goles) echo "<span style='color:red'>No puede estar vacio. Sólo números.</span>"; ?>
                 </p>
                 <input type="submit" name="insertar" value="Insertar">
-                <a href="index.html"><input type="button" name="inicio" value="Inicio"></a>
+                <a href="index.php"><input type="button" name="inicio" value="Inicio"></a>
             </form>
             <?php
         }
