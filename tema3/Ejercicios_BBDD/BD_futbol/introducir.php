@@ -5,11 +5,11 @@
     <body>
         
         <?php
+        // Importamos las funciones necesarias.
+        require_once 'funciones.php';
+        
         // Redirigimos al index en caso de entrar directamente aquí.
-        if (!isset($_GET['id'])) {
-            header("Location: index.php");
-            exit();
-        }
+        redirectIfIdMissing();
         
         // Validation flags.
         $f_dni=false; $f_nombre=false; $f_dorsal=false; $f_posicion=false;
@@ -19,7 +19,7 @@
         // Comprobamos si cumplen los requisitos de los campos.
         if(isset($_POST['insertar'])) {
             // Format validation.
-            if (preg_match('/^\d{8}[a-zA-Z]$/', $_POST['dni'])) $f_dni=true;
+            if (isDniValid($_POST['dni'])) $f_dni=true;
             if (preg_match('/^([a-zA-Z]+\s?)+$/', $_POST['nombre'])) $f_nombre=true;
             if (isset($_POST['dorsal'])) $f_dorsal=true;
             if (isset($_POST['posicion'])) $f_posicion=true;
@@ -84,12 +84,7 @@
         // En caso de pulsar Insertar y todo validado, insertamos el registro.
         if (isset($_POST['insertar']) && $main_flag) {
             // Inicializamos una conexión a la BD.
-            try {
-                $conex = new mysqli("localhost","dwes","abc123.","futbol");
-                $conex->set_charset("utf8mb4");
-            } catch (Exception $ex) {
-                die("ERROR. NO SE HA PODIDO CONECTAR A LA BD.");
-            }
+            $conex = getConnection('futbol');
             // Realizamos la consulta.
             try {
                 // Obtenemos las posiciones seleccionadas.
