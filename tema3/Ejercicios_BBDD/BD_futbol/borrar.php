@@ -58,27 +58,28 @@
                     // Mantenemos el valor DNI introducido.
                     echo "<input type='hidden' name='dni' value='$_POST[dni]'>";
                     
-                    // Si pulsamos sobre Borrar, se borrará el registro y nos redirigiremos a index.php
-                    if (isset($_POST['delete'])) {
-                        try {
-                            $conex->query("DELETE FROM jugador WHERE DNI = $_POST[dni]");
-                        } catch (Exception $ex) {
-                            die($ex->getMessage());
-                        }
-                        // Llegados a este punto, se ha realizado el borrado del registro.
-                        header("Location: index.php?msg=REGISTRO BORRADO CORRECTAMENTE!");             
-                        $conex->close();
-                    }
-                    
                 } else {
                     echo "<p><span style='font-weight:bold'>NO EXISTE UN JUGADOR CON DNI($_POST[dni]) EN LA BD!</span></p>";
                 }
+                // Cerramos la conexión.
+                $conex->close();
             } catch (Exception $ex) {
                 die ("<br>Se ha producido un error: ".$ex->getMessage());
             }
-            // Cerramos la conexión.
-            $conex->close();
         }
+        
+        // Si pulsamos sobre Borrar, se borrará el registro y nos redirigiremos a index.php
+        if (isset($_POST['delete'])) {
+            try {
+                $conex = getConnection('futbol');
+                $conex->query("DELETE FROM jugador WHERE DNI = '$_POST[dni]'");
+                $conex->close();
+                // Llegados a este punto, se ha realizado el borrado del registro.
+                header("Location: index.php?msg=REGISTRO BORRADO CORRECTAMENTE!");                             
+            } catch (Exception $ex) {
+                die($ex->getMessage());
+            }
+        }        
         ?>
         
         </form>

@@ -119,11 +119,11 @@
                         echo "<p><span style='font-weight:bold'>NO SE HAN ENCONTRADO JUGADORES CON LOS REQUISITOS INTRODUCIDOS EN LA BD!</span></p>";
                     }                    
                 }
+                // Cerramos la conexión.
+                $conex->close();
             } catch (Exception $ex) {
                 die ("Error en la consulta: ".$ex->getMessage());
             }
-            // Cerramos la conexión.
-            $conex->close();
         }
         ?>
     </body>

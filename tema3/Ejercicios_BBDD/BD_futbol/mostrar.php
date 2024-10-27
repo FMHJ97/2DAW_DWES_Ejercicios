@@ -39,11 +39,11 @@
             } else {
                 echo "<p><span style='font-weight:bold'>NO HAY JUGADORES EN LA BD!</span></p>";
             }
+            // Cerramos la conexión.
+            $conex->close();            
         } catch (Exception $ex) {
             die($ex->getMessage());
         }
-        // Cerramos la conexión.
-        $conex->close();
         ?>
         <br>
         <a href="index.php"><input type="button" name="inicio" value="Inicio"></a>

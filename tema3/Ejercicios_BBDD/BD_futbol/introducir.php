@@ -93,15 +93,14 @@
                 $conex->query(
                         "INSERT INTO jugador VALUES ('$_POST[dni]','$_POST[nombre]',$_POST[dorsal],'$posiciones','$_POST[equipo]',$_POST[goles])");     
             
-                
+                // Llegados a este punto, se ha realizado la inserción.
+                // Mostramos el mensaje en el menú principal (index.php).
+                header("Location: index.php?msg=REGISTRO INSERTADO CORRECTAMENTE!");             
+                $conex->close();                
             } catch (Exception $ex) {
                 if ($ex->getCode() == 1062) die("ERROR. EXISTE UN REGISTRO CON EL MISMO DNI.");
                 die($ex->getMessage());
-            }
-            // Llegados a este punto, se ha realizado la inserción.
-            // Mostramos el mensaje en el menú principal (index.php).
-            header("Location: index.php?msg=REGISTRO INSERTADO CORRECTAMENTE!");             
-            $conex->close();             
+            }             
         }
         ?>       
     </body>
