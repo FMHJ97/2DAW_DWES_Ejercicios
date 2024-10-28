@@ -40,6 +40,7 @@
             <input type="submit" name="search" value="Buscar">
             <a href="index.php"><input type="button" name="inicio" value="Inicio"></a>
             <br>
+        </form>            
         <?php
         // Mostramos los posibles resultados de la búsqueda.
         if (isset($_POST['search']) && $f_dni) {
@@ -54,10 +55,11 @@
                     echo "<h2>Resultados</h2>";
                     showDataJugadorTable($result);
                     // Botón de borrado.
+                    echo "<form action='' method='POST'>";
                     echo "<br><input type='submit' name='delete' value='Borrar'>";
                     // Mantenemos el valor DNI introducido.
                     echo "<input type='hidden' name='dni' value='$_POST[dni]'>";
-                    
+                    echo "</form>";
                 } else {
                     echo "<p><span style='font-weight:bold'>NO EXISTE UN JUGADOR CON DNI($_POST[dni]) EN LA BD!</span></p>";
                 }
@@ -81,7 +83,5 @@
             }
         }        
         ?>
-        
-        </form>
     </body>
 </html>
