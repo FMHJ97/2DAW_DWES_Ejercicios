@@ -20,7 +20,7 @@ function getConnection($database) {
  * el parámetro 'id' en la URL.
  */
 function redirectIfIdMissing() {
-    if (!isset($_GET['id'])) {
+    if (!isset($_REQUEST['id'])) {
         header("Location: index.php");
         exit();
     }

@@ -29,7 +29,7 @@
             // Comprobamos la opción elegida en el selector.
             switch ($_POST['option']) {
                 case "dni":
-                    if (isDniValid($_POST['dni'])) $f_dni=true;
+                    if (isDniValid($_POST['info'])) $f_dni=true;
                     break;
                 case "posicion":
                     if (preg_match('/^[a-zA-Z]+$/', $_POST['info'])) $f_posicion=true;
