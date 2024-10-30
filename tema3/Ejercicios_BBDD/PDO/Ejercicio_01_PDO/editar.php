@@ -2,6 +2,18 @@
     <head>
         <title>Ejercicio 01 PDO - Editar</title>
     </head>
+    <style>
+        h1 {
+            background-color: #ddf0a4;
+        }
+        #producto {
+            background: #EEEEEE;
+            padding-bottom: 1em;
+        }
+        .boton {
+            background-color: lightgreen;
+        }
+    </style>
     <body>
         <?php
         // Redirigimos al listado en caso de entrada directa.
@@ -38,11 +50,11 @@
                 <p>Descripción:</p>
                 <textarea name="descripcion" rows="10" cols="50"><?php echo isset($registro)? $registro->descripcion:''; ?></textarea>            
                 <!-- PVP -->
-                <p>PVP: <input type="number" name="pvp" value="<?php echo isset($registro)? $registro->PVP:''; ?>"></p>                
+                <p>PVP: <input type="text" name="pvp" value="<?php echo isset($registro)? $registro->PVP:''; ?>"></p>                
                 <!-- Actualizar -->
-                <input type="submit" name="actualizar" value="Actualizar">
+                <input class="boton" type="submit" name="actualizar" value="Actualizar">
                 <!-- Cancelar -->                
-                <a href="listado.php"><input type="button" value="Cancelar"></a>
+                <a href="listado.php"><input class="boton" type="button" value="Cancelar"></a>
             </form>
         </div>
         
@@ -54,10 +66,13 @@
                 $conex->beginTransaction();
                 // Realizamos la consulta.
                 $result = $conex->prepare("UPDATE producto SET nombre=?, nombre_corto=?, descripcion=?, PVP=? WHERE cod=?");
-                $result->execute(array(1=>$_POST['nombre'],2=>$_POST['nombre_corto'],3=>$_POST['descripcion'],4=>$_POST['pvp'],5=>$_POST['cod']));
+                $result->execute(array($_POST['nombre'],$_POST['nombre_corto'],$_POST['descripcion'],$_POST['pvp'],$_POST['cod']));
                 if ($result->rowCount()) {
+                    // Confirmamos los cambios.
                     $conex->commit();
-                    echo "<p><span style='color:green;'>PRODUCTO ACTUALIZADO CORRECTAMENTE!</span></p>";
+                    // Volvemos a listado.
+                    header("Location: listado.php?msg");
+                    exit();
                 } else {
                     echo "NO SE HA PODIDO ACTUALIZAR EL PRODUCTO!";
                 }

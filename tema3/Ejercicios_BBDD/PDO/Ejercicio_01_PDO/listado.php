@@ -50,7 +50,9 @@
                             // Sacamos los posibles resultados como objetos.
                             if ($result->rowCount()) {
                                 while ($fila = $result->fetchObject()) {
-                                    echo "<option value='$fila->cod'>$fila->nombre</option>";
+                                    echo "<option value='$fila->cod' ";
+                                    if (isset($_POST['show']) && $_POST['familia'] == $fila->cod) echo "selected";
+                                    echo ">$fila->nombre</option>";
                                 }
                             }
                         } catch (PDOException $ex) {
@@ -61,6 +63,12 @@
                     <input type="submit" name="show" value="Mostrar productos">
                 </p>
             </form>
+            <?php
+            // Si hemos actualizado un producto.
+            if (isset($_REQUEST['msg']) && !isset($_POST['show'])) {
+                echo "<p><span style='color:green;font-weight:bold;'>PRODUCTO ACTUALIZADO CORRECTAMENTE!</span></p>";
+            }
+            ?>
         </div>
         <!--Formulario Productos según Familia-->
         <?php
