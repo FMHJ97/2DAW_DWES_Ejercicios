@@ -67,15 +67,11 @@
                 // Realizamos la consulta.
                 $result = $conex->prepare("UPDATE producto SET nombre=?, nombre_corto=?, descripcion=?, PVP=? WHERE cod=?");
                 $result->execute(array($_POST['nombre'],$_POST['nombre_corto'],$_POST['descripcion'],$_POST['pvp'],$_POST['cod']));
-                if ($result->rowCount()) {
-                    // Confirmamos los cambios.
-                    $conex->commit();
-                    // Volvemos a listado.
-                    header("Location: listado.php?msg");
-                    exit();
-                } else {
-                    echo "NO SE HA PODIDO ACTUALIZAR EL PRODUCTO!";
-                }
+                // Confirmamos los cambios.
+                $conex->commit();
+                // Volvemos a listado.
+                header("Location: listado.php?msg");
+                exit();
             } catch (PDOException $ex) {
                 $conex->rollBack();
                 die ($ex->getMessage());
