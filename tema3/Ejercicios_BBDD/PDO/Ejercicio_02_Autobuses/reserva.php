@@ -7,7 +7,12 @@
         // Importamos las funciones necesarias.
         require_once './funciones.php';
         // Posible redirección si accedemos directamente.
-        redirectMenu();
+        // Si cargamos la página para ver el mensaje de Reserva,
+        // no seremos redirigidos.
+        if (!isset($_REQUEST['index']) && !isset($_REQUEST['msgReserva'])) {
+            header("Location: index.html");
+            exit();
+        }
         // Establecemos una conexión PDO a la BD autobuses.
         $conex = getConnectionPDO('autobuses');
         // Banderas de validación (Primer formulario).
@@ -87,6 +92,11 @@
         </form>
         <a href="index.html">Volver a Menú</a>
         <?php 
+        // Mostramos el mensaje correspondiente tras Reservar.
+        if (isset($_REQUEST['msgReserva']) && !isset($_POST['consultar'])) {
+            echo "<p>".$_REQUEST['msgReserva']."</p>";
+        }
+        
         // Error validación - Origen y Destino iguales.
         if (isset($_POST['consultar']) && !$f_localizacion) echo "<br><br><span style='color:red;'>El Origen y Destino deben ser diferentes!</span>";
         
@@ -100,6 +110,12 @@
                     // Si existe coincidencia, mostramos el siguiente formulario
                     // con los datos del registro (Más abajo).
                     $registroConsultado = $registro->fetchObject();
+                    // Guardamos los datos del registro consultado
+                    // en la variable $_POST[] para mostrarlos en el formulario.
+                    $_POST['fecha'] = $registroConsultado->Fecha;
+                    $_POST['origen'] = $registroConsultado->Origen;
+                    $_POST['destino'] = $registroConsultado->Destino;
+                    $_POST['plazasLibres'] = $registroConsultado->Plazas_libres;
                 } else {
                     echo "<br><br><span style='color:red;'>No hay ningún viaje desde $_POST[origen] hasta $_POST[destino] en la fecha: $_POST[fecha]!</span>";
                 }
@@ -108,18 +124,9 @@
             }
         }
         
-        // Guardamos los datos del registro consultado
-        // en la variable $_POST[] para mostrarlos en el formulario.
-        if (isset($registroConsultado)) {
-            $_POST['fecha'] = $registroConsultado->Fecha;
-            $_POST['origen'] = $registroConsultado->Origen;
-            $_POST['destino'] = $registroConsultado->Destino;
-            $_POST['plazasLibres'] = $registroConsultado->Plazas_libres;
-        }
-        
         // Mostramos el siguiente formulario si hemos obtenido
         // un registro anteriormente (consulta) o si pulsamos sobre Reservar.
-        if (isset($_POST['consultar']) && isset($registroConsultado) || (isset($_POST['reservar']) && !$f_plazas)) {
+        if (isset($registroConsultado) || (isset($_POST['reservar']) && !$f_plazas)) {
             // Validamos los datos.
             if (isset($_POST['reservar'])) {
                 // Comprobamos si nº plazas a reservar es un número positivo
@@ -178,14 +185,9 @@
                 $conex->rollBack();
                 echo "ERROR! ".$ex->errorInfo[1]." => ".$ex->errorInfo[2];
             }
-            // Eliminamos variables para no mostrar el segundo formulario.
-            unset($_POST['consultar'],$_POST['reservar']);
-        }
-        
-        // Mostramos el mensaje resultante de la Reserva (UPDATE).
-        if (isset($msgReserva)) {
-            echo $msgReserva;
-            unset($msgReserva);
+            // Mensaje que devolvemos (recargamos la página).
+            header('Location: reserva.php?msgReserva='.$msgReserva);
+            exit();
         }
         ?>  
     </body>
