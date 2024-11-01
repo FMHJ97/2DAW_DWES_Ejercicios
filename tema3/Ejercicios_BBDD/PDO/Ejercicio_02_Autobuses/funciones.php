@@ -50,7 +50,7 @@ function isTextValid($text) {
  * @return type
  */
 function isNumValid($num) {
-    return preg_match('/^\d+$/', $num);
+    return preg_match('/^\d+$/', $num) && ($num > 0);
 }
 
 /**

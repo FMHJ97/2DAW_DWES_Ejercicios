@@ -12,6 +12,9 @@
         $conex = getConnectionPDO('autobuses');
         // Banderas de validación.
         $f_fecha=false; $f_matricula=false; $f_origen=false; $f_destino=false; $f_plazasLibres=false;
+        // Bandera de validación donde Origen != Destino.
+        $f_localizacion=false;
+        // Bandera principal.
         $f_principal=false;
         // Validación de campos.
         if (isset($_POST['agregar'])) {
@@ -19,6 +22,9 @@
             $f_matricula = isset($_POST['matricula']);
             $f_origen = isTextValid($_POST['origen']);
             $f_destino = isTextValid($_POST['destino']);
+            // Comprobamos si el Origen y Destino están en distintas localizaciones.
+            // Para ello, pasamos ambas cadenas a minúsculas.
+            if (strtolower($_POST['origen']) != strtolower($_POST['destino'])) $f_localizacion = true;
             // Para comprobar que las plazas libres sean válidas,
             // debemos obtener el número de plazas del autobús seleccionado.
             try {
@@ -31,7 +37,9 @@
             }
             $f_plazasLibres = isPlazasLibresValid($_POST['plazasLibres'], $plazasAutobus);
             // Si todas las validaciones son correctas, la bandera principal será true.
-            if ($f_fecha && $f_matricula && $f_origen && $f_destino && $f_plazasLibres) $f_principal=true;
+            if ($f_fecha && $f_matricula && $f_origen && $f_destino && $f_plazasLibres && $f_localizacion) {
+                $f_principal=true;
+            }
         }
         ?>
         <h1>Nuevo viaje</h1>
@@ -81,6 +89,9 @@
         </form>
         <a href="index.html">Volver a Menú</a>
         <?php
+        // Error validación Origen y Destino iguales.
+        if (isset($_POST['agregar']) && !$f_localizacion) echo "<br><br><span style='color:red;'>El Origen y Destino deben ser diferentes!</span>";
+        
         // Si procedemos a insertar y todos los campos son válidos.
         if (isset($_POST['agregar']) && $f_principal) {
             try {
