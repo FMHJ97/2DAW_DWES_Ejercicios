@@ -37,7 +37,10 @@
         
         <h1>Modificar jugador</h1>
         <form action="" method="POST">
-            <p>Introducir jugador (DNI): <input type="text" name="dni"></p>
+            <p>Introducir jugador (DNI): <input type="text" name="dni">
+                <!--Show error-->
+                <?php if (isset($_POST['search']) && !$f_dni) echo "<span style='color:red'>Error. Introduzca 8 números y 1 letra.</span>"; ?>                            
+            </p>
             <input type="submit" name="search" value="Buscar">
             <a href="index.php"><input type="button" name="inicio" value="Inicio"></a>
         </form>
@@ -71,11 +74,11 @@
         }
         
         // Mostramos el formulario para modificar el registro.
-        if (isset($registro) && !empty($registro)) {
+        if (isset($registro) || (isset($_POST['modificar']) && !$main_flag)) {
             ?>
             <hr>
             <form action="" method="POST">
-                <p>DNI: <input type="text" name="dni" value="<?php echo $registro->DNI; ?>" disabled="">
+                <p>DNI: <input type="text" name="dni" value="<?php echo $registro->DNI; ?>" readonly="">
                 </p>
                 <p>Nombre: <input type="text" name="nombre" value="<?php echo $registro->Nombre; ?>">
                 </p>
