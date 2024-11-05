@@ -26,20 +26,11 @@
     </style>
     <body>
         <?php
-        // Inicia el "output buffering". Esto significa que toda la salida generada 
-        // a partir de este punto se almacenará en un búfer en lugar de enviarse 
-        // inmediatamente al navegador.
-        ob_start();
         
         // Importamos las funciones necesarias.
         require_once './funciones.php';
         // Posible redirección si accedemos directamente.
-        // Si cargamos la página para ver el mensaje de Borrar y Modificar,
-        // no seremos redirigidos.
-        if (!isset($_REQUEST['index']) && !isset($_REQUEST['msgBorrar']) && !isset($_REQUEST['msgModificar'])) {
-            header("Location: index.html");
-            exit();
-        }
+        redirectMenu();
         // Establecemos una conexión PDO a la BD autobuses.
         $conex = getConnectionPDO('autobuses');
         
@@ -75,6 +66,53 @@
                 $f_principal=true;
             }
         }
+        
+        // Proceso para realizar la consulta de Modificar (UPDATE).
+        if (isset($_POST['editar']) && $f_principal) {
+                try {
+                // Realizamos la consulta.
+                $res = $conex->exec("UPDATE viajes SET Fecha='$_POST[fecha]', Matricula='$_POST[matricula]', "
+                        . "Origen='$_POST[origen]', Destino='$_POST[destino]', Plazas_libres=$_POST[plazasLibres] "
+                        . "WHERE Fecha='$_POST[fecha_original]' AND Matricula='$_POST[matricula_original]' AND Origen='$_POST[origen_original]' AND Destino='$_POST[destino_original]'");
+                // Comprobamos las filas afectadas por la consulta.
+                // Utilizamos exec() para INSERT, UPDPATE y DELETE.
+                // Puede devolver false (ERROR en la ejecución de la consulta),
+                // 0 (Consulta ejecutada pero NINGUNA FILA AFECTADA) y
+                // n > 0 (Consulta ejecutada y FILAS AFECTADAS).
+                if ($res) {
+                    $msgModificar = "<span style='color:green;'>VIAJE MODIFICADO CORRECTAMENTE!</span>";
+                } else if ($res === 0) {
+                    $msgModificar = "<span style='color:red;'>NO SE HA ACTUALIZADO NINGÚN DATO DEL VIAJE!</span>";
+                } else {
+                    $msgModificar = "<span style='color:red;'>ERROR EN LA EJECUCIÓN DE LA CONSULTA!</span>";
+                }
+            } catch (PDOException $ex) {
+                echo "ERROR! ".$ex->errorInfo[1]." => ".$ex->errorInfo[2];
+            }
+        }
+        
+        // Si pulsamos sobre el botón Borrar en la tabla.
+        if (isset($_POST['borrar'])) {
+            try {
+                // Consulta para el borrado del viaje.
+                $reg=$conex->exec("DELETE FROM viajes WHERE Fecha='$_POST[fecha_original]' AND Matricula='$_POST[matricula_original]' "
+                        . "AND Origen='$_POST[origen_original]' AND Destino='$_POST[destino_original]'");
+                // Comprobamos las filas afectadas por la consulta.
+                // Utilizamos exec() para INSERT, UPDPATE y DELETE.
+                // Puede devolver false (ERROR en la ejecución de la consulta),
+                // 0 (Consulta ejecutada pero NINGUNA FILA AFECTADA) y
+                // n > 0 (Consulta ejecutada y FILAS AFECTADAS).
+                if ($reg) {
+                    $msgBorrar = "<span style='color:green;'>VIAJE BORRADO CORRECTAMENTE!</span>";
+                } else if ($reg === 0) {
+                    $msgBorrar = "<span style='color:red;'>NO SE HA BORRADO NINGÚN REGISTRO!</span>";
+                } else {
+                    $msgBorrar = "<span style='color:red;'>ERROR EN LA EJECUCIÓN DE LA CONSULTA!</span>";
+                }
+            } catch (PDOException $ex) {
+                echo "ERROR! ".$ex->errorInfo[1]." => ".$ex->errorInfo[2];
+            }
+        }        
         
         ?>
         <h1>Borra o modifica un viaje</h1>
@@ -115,12 +153,12 @@
         <br><a href="index.html">Volver a Menú</a>
                 <?php
                 // Mostramos el mensaje correspondiente tras Borrar.
-                if (isset($_REQUEST['msgBorrar']) && !isset($_POST['borrar']) && !isset($_POST['modificar'])) {
-                    echo "<p>".$_REQUEST['msgBorrar']."</p>";
+                if (isset($msgBorrar) && !isset($_POST['modificar'])) {
+                    echo "<p>".$msgBorrar."</p>";
                 }
                 // Mostramos el mensaje correspondiente tras Modificar.
-                if (isset($_REQUEST['msgModificar']) && !isset($_POST['borrar']) && !isset($_POST['modificar'])) {
-                    echo "<p>".$_REQUEST['msgModificar']."</p>";
+                if (isset($msgModificar) && !isset($_POST['borrar']) && !isset($_POST['modificar'])) {
+                    echo "<p>".$msgModificar."</p>";
                 }
             } else {
                 echo "<span style='font-weight:bold;'>NO EXISTEN REGISTROS EN LA BD!</span>";
@@ -208,77 +246,6 @@
         // Error validación Origen y Destino iguales.
         if (isset($_POST['editar']) && !$f_localizacion) echo "<span style='color:red;'>El Origen y Destino deben ser diferentes!</span>";            
         }
-        
-        // Proceso para realizar la consulta de Modificar (UPDATE).
-        if (isset($_POST['editar']) && $f_principal) {
-                try {
-                //Comenzamos la transacción.
-                $conex->beginTransaction();
-                // Realizamos la consulta.
-                $res = $conex->exec("UPDATE viajes SET Fecha='$_POST[fecha]', Matricula='$_POST[matricula]', "
-                        . "Origen='$_POST[origen]', Destino='$_POST[destino]', Plazas_libres=$_POST[plazasLibres] "
-                        . "WHERE Fecha='$_POST[fecha_original]' AND Matricula='$_POST[matricula_original]' AND Origen='$_POST[origen_original]' AND Destino='$_POST[destino_original]'");
-                // Comprobamos las filas afectadas por la consulta.
-                // Utilizamos exec() para INSERT, UPDPATE y DELETE.
-                // Puede devolver false (ERROR en la ejecución de la consulta),
-                // 0 (Consulta ejecutada pero NINGUNA FILA AFECTADA) y
-                // n > 0 (Consulta ejecutada y FILAS AFECTADAS).
-                if ($res) {
-                    $msgModificar = "<span style='color:green;'>VIAJE MODIFICADO CORRECTAMENTE!</span>";
-                    // Confirmamos los cambios.
-                    $conex->commit();
-                } else if ($res === 0) {
-                    $msgModificar = "<span style='color:red;'>NO SE HA ACTUALIZADO NINGÚN DATO DEL VIAJE!</span>";
-                    $conex->rollBack();
-                } else {
-                    $msgModificar = "<span style='color:red;'>ERROR EN LA EJECUCIÓN DE LA CONSULTA!</span>";
-                    // Deshacemos los cambios.
-                    $conex->rollBack();
-                }
-            } catch (PDOException $ex) {
-                $conex->rollBack();
-                echo "ERROR! ".$ex->errorInfo[1]." => ".$ex->errorInfo[2];
-            }
-            // Mensaje que devolvemos (recargamos la página).
-            header('Location: modificaBorra.php?msgModificar='.$msgModificar);
-            exit();
-        }
-        
-        // Si pulsamos sobre el botón Borrar en la tabla.
-        if (isset($_POST['borrar'])) {
-            try {
-                // Comenzamos la transacción.
-                $conex->beginTransaction();
-                // Consulta para el borrado del viaje.
-                $reg=$conex->exec("DELETE FROM viajes WHERE Fecha='$_POST[fecha]' AND Matricula='$_POST[matricula]' "
-                        . "AND Origen='$_POST[origen]' AND Destino='$_POST[destino]'");
-                // Comprobamos las filas afectadas por la consulta.
-                // Utilizamos exec() para INSERT, UPDPATE y DELETE.
-                // Puede devolver false (ERROR en la ejecución de la consulta),
-                // 0 (Consulta ejecutada pero NINGUNA FILA AFECTADA) y
-                // n > 0 (Consulta ejecutada y FILAS AFECTADAS).
-                if ($reg) {
-                    $msgBorrar = "<span style='color:green;'>VIAJE BORRADO CORRECTAMENTE!</span>";
-                    // Confirmamos los cambios.
-                    $conex->commit();
-                } else if ($reg === 0) {
-                    $msgBorrar = "<span style='color:red;'>NO SE HA BORRADO NINGÚN REGISTRO!</span>";
-                    $conex->rollBack();
-                } else {
-                    $msgBorrar = "<span style='color:red;'>ERROR EN LA EJECUCIÓN DE LA CONSULTA!</span>";
-                    // Deshacemos los cambios.
-                    $conex->rollBack();
-                }
-            } catch (PDOException $ex) {
-                echo "ERROR! ".$ex->errorInfo[1]." => ".$ex->errorInfo[2];
-            }
-            // Mensaje que devolvemos (tras recargar la página).
-            header('Location: modificaBorra.php?msgBorrar='.$msgBorrar);
-            exit();
-        }
-        
-        // Envía todo el contenido del búfer al navegador y apaga el "output buffering".
-        ob_end_flush();
         ?>
     </body>
 </html>

@@ -7,12 +7,7 @@
         // Importamos las funciones necesarias.
         require_once './funciones.php';
         // Posible redirección si accedemos directamente.
-        // Si cargamos la página para ver el mensaje de Reserva,
-        // no seremos redirigidos.
-        if (!isset($_REQUEST['index']) && !isset($_REQUEST['msgReserva'])) {
-            header("Location: index.html");
-            exit();
-        }
+        redirectMenu();
         // Establecemos una conexión PDO a la BD autobuses.
         $conex = getConnectionPDO('autobuses');
         // Banderas de validación (Primer formulario).
@@ -33,9 +28,61 @@
             if ($f_fecha && $f_origen && $f_destino && $f_localizacion) {
                 $f_principal=true;
             }
-        }    
+        }
+        
+        // Si procedemos a consultar y todos los campos son válidos.
+        if (isset($_POST['consultar']) && $f_principal) {
+            try {
+                // Consulta para mostrar el posible viaje.
+                $registro = $conex->query("SELECT * FROM viajes WHERE Fecha = '$_POST[fecha]' AND Origen = '$_POST[origen]' AND Destino = '$_POST[destino]'");
+                // Comprobamos los resultados obtenidos.
+                if ($registro->rowCount()) {
+                    // Si existe coincidencia, mostramos el siguiente formulario
+                    // con los datos del registro (Más abajo).
+                    $registroConsultado = $registro->fetchObject();
+                    // Guardamos los datos del registro consultado
+                    // en la variable $_POST[] para mostrarlos en el formulario.
+                    $_POST['fecha'] = $registroConsultado->Fecha;
+                    $_POST['origen'] = $registroConsultado->Origen;
+                    $_POST['destino'] = $registroConsultado->Destino;
+                    $_POST['plazasLibres'] = $registroConsultado->Plazas_libres;
+                } else {
+                    echo "<br><br><span style='color:red;'>No hay ningún viaje desde $_POST[origen] hasta $_POST[destino] en la fecha: $_POST[fecha]!</span>";
+                }
+            } catch (PDOException $ex) {
+                die ("ERROR! ".$ex->errorInfo[1]." => ".$ex->errorInfo[2]);
+            }
+        }        
+        
         // Bandera Validación (segundo formulario).
         $f_plazas=false;
+        
+        // Pulsamos sobre Reservar y campos válidos.
+        // Procedemos a realizar la reserva.
+        if (isset($_POST['reservar']) && $f_plazas) {
+            try {
+                // Calculamos las plazas restantes.
+                $plazas = ($_POST['plazasLibres'] - $_POST['plazasReserva']);
+                // Realizamos la consulta de reserva (update).
+                $res = $conex->exec("UPDATE viajes SET Plazas_libres=$plazas "
+                        . "WHERE Fecha='$_POST[fecha]' AND Origen='$_POST[origen]' AND Destino='$_POST[destino]'");
+                // Comprobamos las filas afectadas por la consulta.
+                // Utilizamos exec() para INSERT, UPDPATE y DELETE.
+                // Puede devolver false (ERROR en la ejecución de la consulta),
+                // 0 (Consulta ejecutada pero NINGUNA FILA AFECTADA) y
+                // n > 0 (Consulta ejecutada y FILAS AFECTADAS).
+                if ($res) {
+                    $msgReserva = "<span style='color:green;'>Ha reservado $_POST[plazasReserva] plazas para ir desde $_POST[origen] hasta $_POST[destino] en la fecha: $_POST[fecha]!</span>";
+                } else if ($res === 0) {
+                    $msgReserva = "<span style='color:black;'>NO SE HA ACTUALIZADO NINGÚN DATO!</span>";
+                } else {
+                    $msgReserva = "<span style='color:red;'>ERROR EN LA EJECUCIÓN DE LA CONSULTA!</span>";
+                }
+            } catch (PDOException $ex) {
+                echo "ERROR! ".$ex->errorInfo[1]." => ".$ex->errorInfo[2];
+            }
+        }        
+        
         ?>
         <h1>Reserva viaje</h1>
         <form action="" method="POST">
@@ -91,37 +138,13 @@
             <input type="submit" name="consultar" value="Consultar">            
         </form>
         <a href="index.html">Volver a Menú</a>
-        <?php 
-        // Mostramos el mensaje correspondiente tras Reservar.
-        if (isset($_REQUEST['msgReserva']) && !isset($_POST['consultar'])) {
-            echo "<p>".$_REQUEST['msgReserva']."</p>";
-        }
-        
+        <?php
         // Error validación - Origen y Destino iguales.
-        if (isset($_POST['consultar']) && !$f_localizacion) echo "<br><br><span style='color:red;'>El Origen y Destino deben ser diferentes!</span>";
+        if (isset($_POST['consultar']) && !$f_localizacion) echo "<br><br><span style='color:red;'>El Origen y Destino deben ser diferentes!</span>";        
         
-        // Si procedemos a consultar y todos los campos son válidos.
-        if (isset($_POST['consultar']) && $f_principal) {
-            try {
-                // Consulta para mostrar el posible viaje.
-                $registro = $conex->query("SELECT * FROM viajes WHERE Fecha = '$_POST[fecha]' AND Origen = '$_POST[origen]' AND Destino = '$_POST[destino]'");
-                // Comprobamos los resultados obtenidos.
-                if ($registro->rowCount()) {
-                    // Si existe coincidencia, mostramos el siguiente formulario
-                    // con los datos del registro (Más abajo).
-                    $registroConsultado = $registro->fetchObject();
-                    // Guardamos los datos del registro consultado
-                    // en la variable $_POST[] para mostrarlos en el formulario.
-                    $_POST['fecha'] = $registroConsultado->Fecha;
-                    $_POST['origen'] = $registroConsultado->Origen;
-                    $_POST['destino'] = $registroConsultado->Destino;
-                    $_POST['plazasLibres'] = $registroConsultado->Plazas_libres;
-                } else {
-                    echo "<br><br><span style='color:red;'>No hay ningún viaje desde $_POST[origen] hasta $_POST[destino] en la fecha: $_POST[fecha]!</span>";
-                }
-            } catch (PDOException $ex) {
-                die ("ERROR! ".$ex->errorInfo[1]." => ".$ex->errorInfo[2]);
-            }
+        // Mostramos el mensaje correspondiente tras Reservar.
+        if (isset($msgReserva) && !isset($_POST['consultar'])) {
+            echo "<p>".$msgReserva."</p>";
         }
         
         // Mostramos el siguiente formulario si hemos obtenido
@@ -151,43 +174,6 @@
                 <input type="submit" name="reservar" value="Reservar">
             </form>
         <?php
-        }
-        
-        // Pulsamos sobre Reservar y campos válidos.
-        // Procedemos a realizar la reserva.
-        if (isset($_POST['reservar']) && $f_plazas) {
-            try {
-                //Comenzamos la transacción.
-                $conex->beginTransaction();
-                // Calculamos las plazas restantes.
-                $plazas = ($_POST['plazasLibres'] - $_POST['plazasReserva']);
-                // Realizamos la consulta de reserva (update).
-                $res = $conex->exec("UPDATE viajes SET Plazas_libres=$plazas "
-                        . "WHERE Fecha='$_POST[fecha]' AND Origen='$_POST[origen]' AND Destino='$_POST[destino]'");
-                // Comprobamos las filas afectadas por la consulta.
-                // Utilizamos exec() para INSERT, UPDPATE y DELETE.
-                // Puede devolver false (ERROR en la ejecución de la consulta),
-                // 0 (Consulta ejecutada pero NINGUNA FILA AFECTADA) y
-                // n > 0 (Consulta ejecutada y FILAS AFECTADAS).
-                if ($res) {
-                    $msgReserva = "<span style='color:green;'>Ha reservado $_POST[plazasReserva] plazas para ir desde $_POST[origen] hasta $_POST[destino] en la fecha: $_POST[fecha]!</span>";
-                    // Confirmamos los cambios.
-                    $conex->commit();
-                } else if ($res === 0) {
-                    $msgReserva = "<span style='color:black;'>NO SE HA ACTUALIZADO NINGÚN DATO!</span>";
-                    $conex->rollBack();
-                } else {
-                    $msgReserva = "<span style='color:red;'>ERROR EN LA EJECUCIÓN DE LA CONSULTA!</span>";
-                    // Deshacemos los cambios.
-                    $conex->rollBack();
-                }
-            } catch (PDOException $ex) {
-                $conex->rollBack();
-                echo "ERROR! ".$ex->errorInfo[1]." => ".$ex->errorInfo[2];
-            }
-            // Mensaje que devolvemos (recargamos la página).
-            header('Location: reserva.php?msgReserva='.$msgReserva);
-            exit();
         }
         ?>  
     </body>
