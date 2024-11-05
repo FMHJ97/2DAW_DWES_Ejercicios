@@ -57,6 +57,15 @@
         // Bandera Validación (segundo formulario).
         $f_plazas=false;
         
+        // Validamos los datos.
+        if (isset($_POST['reservar'])) {
+            // Comprobamos si nº plazas a reservar es un número positivo
+            // mayor que 0 y que su valor sea igual o menor que las plazas
+            // disponibles.
+            $f_plazas = (($_POST['plazasLibres'] >= $_POST['plazasReserva'])
+                    && isNumValid($_POST['plazasReserva']));
+        }        
+        
         // Pulsamos sobre Reservar y campos válidos.
         // Procedemos a realizar la reserva.
         if (isset($_POST['reservar']) && $f_plazas) {
@@ -150,14 +159,6 @@
         // Mostramos el siguiente formulario si hemos obtenido
         // un registro anteriormente (consulta) o si pulsamos sobre Reservar.
         if (isset($registroConsultado) || (isset($_POST['reservar']) && !$f_plazas)) {
-            // Validamos los datos.
-            if (isset($_POST['reservar'])) {
-                // Comprobamos si nº plazas a reservar es un número positivo
-                // mayor que 0 y que su valor sea igual o menor que las plazas
-                // disponibles.
-                $f_plazas = (($_POST['plazasLibres'] >= $_POST['plazasReserva'])
-                        && isNumValid($_POST['plazasReserva']));
-            }
             ?>
             <hr>
             <form action="" method="POST">
