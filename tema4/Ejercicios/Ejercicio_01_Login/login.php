@@ -12,7 +12,7 @@ if (isset($_POST['acceder']) && !isset($conex)) {
 if (isset($_POST['acceder'])) {
     try {
         // Realizamos una consulta a la BD para verificar las credenciales.
-        $result = $conex->prepare("SELECT Clave FROM usuario WHERE Usuario=?");
+        $result = $conex->prepare("SELECT * FROM usuario WHERE Usuario=?");
         // Asignamos parámetros.
         $result->bindParam(1, $_POST['user']);
         // Ejecutamos la consulta y comprobamos resultados.
@@ -24,9 +24,21 @@ if (isset($_POST['acceder'])) {
                 // Auntenticado, luego creamos una cookie con los datos.
                 // Comprobamos si el checkbox está seleccionado.
                 if (isset($_POST['remember'])) {
-                    
+                    // Se guardarán durante 1 año.
+                    // Pasamos el usuario, contraseña, remember, nombre, apellidos y fecha-hora actuales.
+                    setcookie('user', $registro->Usuario, time()+3600*24*365);
+                    setcookie('pwd', $_POST['pwd'], time()+3600*24*365);
+                    setcookie('remember', 'on', time()+3600*24*365);
+                    setcookie('name', $registro->Nombre, time()+3600*24*365);
+                    setcookie('surname', $registro->Apellidos, time()+3600*24*365);
                 } else {
-                    
+                    // Se guardarán mientras dure la sesión.
+                    // Pasamos el usuario, contraseña, nombre, apellidos y fecha-hora actuales.
+                    setcookie('user', $registro->Usuario);
+                    setcookie('pwd', $_POST['pwd']);
+                    setcookie('remember', 'off');
+                    setcookie('name', $registro->Nombre);
+                    setcookie('surname', $registro->Apellidos);
                 }
                 // Nos dirigimos al fichero datos.
                 header('Location:datos.php?login');
@@ -49,9 +61,12 @@ if (isset($_POST['acceder'])) {
     <body>
         <h1>Formulario de acceso</h1>
         <form action="" method="POST">
-            <p>Usuario: <input type="text" name="user"></p>
-            <p>Clave: <input type="password" name="pwd"></p>
-            <input type="checkbox" name="remember"><label>Recuérdame</label>
+            <p>Usuario: <input type="text" name="user"
+                               value="<?php echo ($_COOKIE['remember'] === 'on') ? $_COOKIE['user']:''; ?>"></p>
+            <p>Clave: <input type="password" name="pwd"
+                             value="<?php echo ($_COOKIE['remember'] === 'on') ? $_COOKIE['pwd']:''; ?>"></p>
+            <input type="checkbox" name="remember"
+                   <?php echo ($_COOKIE['remember'] === 'on') ? 'checked':''; ?>><label>Recuérdame</label>
             <br><br>
             <input type="submit" name="acceder" value="Acceder">
             <a><input type="button" value="Registrar"></a>
