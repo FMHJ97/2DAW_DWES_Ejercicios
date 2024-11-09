@@ -17,8 +17,8 @@ if (isset($_COOKIE['login'])) {
 
 // Si pulsamos sobre Salir.
 if (isset($_POST['salir'])) {
-    if ($_COOKIE['remember'] === 'off') setcookie('remember', 'on', time() - time());
-    header('Location: login.php');
+    header('Location:login.php');
+    exit();
 }
 ?>
 

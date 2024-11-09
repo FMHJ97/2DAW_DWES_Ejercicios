@@ -10,6 +10,17 @@ if (isset($_POST['acceder']) && !isset($conex)) {
 
 // Si pulsamos sobre Acceder.
 if (isset($_POST['acceder'])) {
+    // Eliminar la cookie si no se marca el checkbox.
+    if (!isset($_POST['remember'])) {
+        setcookie('remember', '', time() - 3600);
+        setcookie('user', '', time() - 3600);
+        setcookie('pwd', '', time() - 3600);
+        setcookie('name', '', time() - 3600);
+        setcookie('surname', '', time() - 3600);
+        setcookie('login', '',time() - 3600);
+        setcookie('time', '',time() - 3600);
+    }    
+    
     try {
         // Realizamos una consulta a la BD para verificar las credenciales.
         $result = $conex->prepare("SELECT * FROM usuario WHERE Usuario=?");
@@ -24,19 +35,18 @@ if (isset($_POST['acceder'])) {
                 // Auntenticado, luego creamos una cookie con los datos.
                 // Comprobamos si el checkbox está seleccionado.
                 if (isset($_POST['remember'])) {
-                    // Se guardarán durante 1 año.
+                    // Se guardarán durante 1 día.
                     // Pasamos el usuario, contraseña, remember, nombre, apellidos y fecha-hora actuales.
-                    setcookie('user', $registro->Usuario, time()+3600*24*365);
-                    setcookie('pwd', $_POST['pwd'], time()+3600*24*365);
-                    setcookie('remember', 'on', time()+3600*24*365);
-                    setcookie('name', $registro->Nombre, time()+3600*24*365);
-                    setcookie('surname', $registro->Apellidos, time()+3600*24*365);
+                    setcookie('user', $registro->Usuario, time()+3600*24);
+                    setcookie('pwd', $_POST['pwd'], time()+3600*24);
+                    setcookie('remember', $_POST['remember'], time()+3600*24);
+                    setcookie('name', $registro->Nombre, time()+3600*24);
+                    setcookie('surname', $registro->Apellidos, time()+3600*24);
                 } else {
                     // Se guardarán mientras dure la sesión.
                     // Pasamos el usuario, contraseña, nombre, apellidos y fecha-hora actuales.
                     setcookie('user', $registro->Usuario);
                     setcookie('pwd', $_POST['pwd']);
-                    setcookie('remember', 'off');
                     setcookie('name', $registro->Nombre);
                     setcookie('surname', $registro->Apellidos);
                 }
@@ -52,6 +62,9 @@ if (isset($_POST['acceder'])) {
         echo $ex->getMessage();
     }
 }
+
+// Si hemos insertado un nuevo usuario en la página Registrar.
+if (isset($_GET['success'])) $msgRegister = "USUARIO REGISTRADO CORRECTAMENTE!";
 ?>
 
 <html>
@@ -59,17 +72,17 @@ if (isset($_POST['acceder'])) {
         <title>BD encript - Formulario de acceso</title>
     </head>
     <body>
+        <?php if (isset($msgRegister)) echo $msgRegister; ?>
         <h1>Formulario de acceso</h1>
         <form action="" method="POST">
             <p>Usuario: <input type="text" name="user"
-                               value="<?php echo ($_COOKIE['remember'] === 'on') ? $_COOKIE['user']:''; ?>"></p>
+                               value="<?php echo isset($_COOKIE['remember']) ? $_COOKIE['user'] : ""; ?>"></p>
             <p>Clave: <input type="password" name="pwd"
-                             value="<?php echo ($_COOKIE['remember'] === 'on') ? $_COOKIE['pwd']:''; ?>"></p>
-            <input type="checkbox" name="remember"
-                   <?php echo ($_COOKIE['remember'] === 'on') ? 'checked':''; ?>><label>Recuérdame</label>
+                               value="<?php echo isset($_COOKIE['remember']) ? $_COOKIE['pwd'] : ""; ?>"></p>
+            <input type="checkbox" name="remember" <?php echo isset($_COOKIE['remember']) ? "checked" : ""; ?>><label>Recuérdame</label>
             <br><br>
             <input type="submit" name="acceder" value="Acceder">
-            <a><input type="button" value="Registrar"></a>
+            <a href="registro.php"><input type="button" value="Registrar"></a>
         </form>
         <?php
         if (isset($_POST['acceder']) && isset($msg)) {
