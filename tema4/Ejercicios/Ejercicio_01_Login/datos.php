@@ -8,10 +8,10 @@ if (!isset($_GET['login'])) {
 // Comprobamos si hemos entrado por primera vez.
 if (isset($_COOKIE['login'])) {
     $msg = "Bienvenid@, $_COOKIE[name] $_COOKIE[surname]! Tu último acceso fue $_COOKIE[time]";
-    setcookie('time', date('d-m-Y H:i:s', time()));
+    setcookie('time', date('d-m-Y H:i:s'), time()+3600*24);
 } else {
     setcookie('login','on');
-    setcookie('time', date('d-m-Y H:i:s', time()));
+    setcookie('time', date('d-m-Y H:i:s'));
     $msg = "Es la primera vez que entras. Bienvenid@, $_COOKIE[name] $_COOKIE[surname]!";
 }
 

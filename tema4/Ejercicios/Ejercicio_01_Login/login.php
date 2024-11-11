@@ -44,9 +44,7 @@ if (isset($_POST['acceder'])) {
                     setcookie('surname', $registro->Apellidos, time()+3600*24);
                 } else {
                     // Se guardarán mientras dure la sesión.
-                    // Pasamos el usuario, contraseña, nombre, apellidos y fecha-hora actuales.
-                    setcookie('user', $registro->Usuario);
-                    setcookie('pwd', $_POST['pwd']);
+                    // Pasamos el nombre y apellidos.
                     setcookie('name', $registro->Nombre);
                     setcookie('surname', $registro->Apellidos);
                 }
