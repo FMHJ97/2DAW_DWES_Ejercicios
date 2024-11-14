@@ -1,0 +1,9 @@
+<html>
+    <head>
+        <title>Ejercicio 02: Logueo - Intentos</title>
+    </head>
+    <body>
+        <h1>Ha agotado el número de intentos!</h1>
+        <h2>Vuelva a intentarlo más tarde.</h2>
+    </body>
+</html>
