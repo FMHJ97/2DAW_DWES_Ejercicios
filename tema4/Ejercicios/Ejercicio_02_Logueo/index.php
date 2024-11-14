@@ -2,13 +2,17 @@
 // Creamos una sesión para conservar los datos necesarios.
 session_start();
 
-// Creamos una cookie para los intentos.
-if (!isset($_COOKIE['intentos'])) {
-    setcookie("intentos", "3");
+// Si existe una sesión Credenciales, redirigimos a inicio.php
+if (isset($_SESSION['credenciales'])) {
+    header("Location:inicio.php");
+    exit();
 }
-else if ($_COOKIE['intentos'] <= 0) {
-    // Creamos una cookie para el bloqueo de intentos.
-    setcookie("block", "", time() + 20);
+
+// Creamos una cookie para los intentos.
+if (!isset($_COOKIE['intentos'])) setcookie("intentos", "3");
+
+// Si el valor de la cookie Intentos es igual a 0, redirigimos.
+if (isset($_COOKIE['intentos']) && $_COOKIE['intentos'] == 0) {
     // Realizamos una redirección.
     header("Location:intentos.php");
     exit();
@@ -53,21 +57,37 @@ if (isset($_POST['login'])) {
                     exit();
                 } else {
                     // Mensaje de error.
-                    $msg = "<br><span style='color:red'>USUARIO O CLAVE INCORRECTA!</span>";
+                    $msg = "<br><br><span style='color:red'>USUARIO O CLAVE INCORRECTA!</span>";
                     // Restamos un intento a la cookie Intentos.
-                    $valor_actual = $_COOKIE['intentos'];
-                    setcookie("intentos", $valor_actual-1);
-                    // Mensaje de intentos.
-                    $msg_intentos = "<span style='font-weight:bold'>Te quedan $_COOKIE[intentos] intentos!</span>";
+                    $valor_actual = $_COOKIE['intentos'] - 1;
+                    // Comprobamos el número de intentos.
+                    if ($valor_actual <= 0) {
+                        setcookie("intentos", "0", time()+30);
+                        // Realizamos una redirección.
+                        header("Location:intentos.php");
+                        exit();
+                    } else {
+                        setcookie("intentos", $valor_actual);
+                        // Mensaje de intentos.
+                        $msg_intentos = "<span style='font-weight:bold'>Te quedan $valor_actual intentos!</span>";
+                    }
                 }
             } else {
                 // Mensaje de error.
-                $msg = "<br><span style='color:red'>USUARIO O CLAVE INCORRECTA!</span>";
+                $msg = "<br><br><span style='color:red'>USUARIO O CLAVE INCORRECTA!</span>";
                 // Restamos un intento a la cookie Intentos.
-                $valor_actual = $_COOKIE['intentos'];
-                setcookie("intentos", $valor_actual-1);
-                // Mensaje de intentos.
-                $msg_intentos = "<span style='font-weight:bold'>Te quedan $_COOKIE[intentos] intentos!</span>";
+                $valor_actual = $_COOKIE['intentos'] - 1;
+                // Comprobamos el número de intentos.
+                if ($valor_actual <= 0) {
+                    setcookie("intentos", "0", time()+30);
+                    // Realizamos una redirección.
+                    header("Location:intentos.php");
+                    exit();
+                } else {
+                    setcookie("intentos", $valor_actual);
+                    // Mensaje de intentos.
+                    $msg_intentos = "<span style='font-weight:bold'>Te quedan $valor_actual intentos!</span>";
+                }
             }
         } catch (PDOException $ex) {
             echo $ex->errorInfo[1]." => ".$ex->errorInfo[2];
