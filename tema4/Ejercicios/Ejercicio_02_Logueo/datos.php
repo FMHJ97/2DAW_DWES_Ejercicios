@@ -13,13 +13,8 @@ if (isset($_POST['exit']) && isset($_SESSION['credenciales'])) {
     exit();
 }
 // Si pulsamos sobre el botón Ver más datos.
-else if (isset($_POST['show']) && isset($_SESSION['credenciales'])) {
-    header("Location:datos.php");
-    exit();
-}
-// Si pulsamos sobre el botón Modificar datos.
-else if (isset($_POST['modify']) && isset($_SESSION['credenciales'])) {
-    header("Location:modificar.php");
+else if (isset($_POST['back']) && isset($_SESSION['credenciales'])) {
+    header("Location:inicio.php");
     exit();
 }
 
@@ -34,7 +29,7 @@ if (!isset($_SESSION['credenciales'])) {
 ?>
 <html>
     <head>
-        <title>Ejercicio 2: Logueo - Inicio</title>
+        <title>Ejercicio 2: Logueo - Datos</title>
         <?php
         if (isset($_SESSION['credenciales'])) {
             echo "<style>";
@@ -46,14 +41,19 @@ if (!isset($_SESSION['credenciales'])) {
             echo "}";
             echo "</style>";
         }
-        ?>
+        ?>        
     </head>
     <body>
         <h1>Hola, <?php if (isset($_SESSION['credenciales'])) echo $autenticado->nombre." ".$autenticado->apellidos; ?>!</h1>
-        <h2>Bienvenid@ a nuestra web!</h2>
+        <h2>Tus datos son:</h2>
+        <?php
+        // Realizamos un bucle for-each para sacar todos los datos del usuario.
+        foreach ($autenticado as $key => $value) {
+            echo "<p>$key: $value</p>";
+        }
+        ?>
         <form action="" method="POST">
-            <input type="submit" name="show" value="Ver más datos">
-            <input type="submit" name="modify" value="Modificar datos">
+            <input type="submit" name="back" value="Volver">
             <input type="submit" name="exit" value="Salir">
         </form>
     </body>
