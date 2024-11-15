@@ -1,4 +1,13 @@
 <?php
+/* Ajustamos la configuración de PHP para definir el tiempo máximo de vida de los
+ * datos de la sesión en el servidor.
+ * 
+ * gc_maxlifetime (garbage collection max lifetime) indica cuánto tiempo (en segundos)
+ * deben mantenerse las sesiones inactivas antes de ser eliminadas.
+ */
+ini_set("session.gc_maxlifetime", 1800);
+// Establece un tiempo de expiración de 1800 segundos para la cookie de sesión.
+session_set_cookie_params(1800);
 // Creamos una sesión para conservar los datos necesarios.
 session_start();
 

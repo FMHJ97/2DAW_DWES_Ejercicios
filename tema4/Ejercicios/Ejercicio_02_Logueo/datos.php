@@ -12,7 +12,7 @@ if (isset($_POST['exit']) && isset($_SESSION['credenciales'])) {
     header("Location:index.php");
     exit();
 }
-// Si pulsamos sobre el botón Ver más datos.
+// Si pulsamos sobre el botón Volver.
 else if (isset($_POST['back']) && isset($_SESSION['credenciales'])) {
     header("Location:inicio.php");
     exit();
