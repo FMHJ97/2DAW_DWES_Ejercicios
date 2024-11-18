@@ -206,9 +206,9 @@ if (isset($_POST['modify'])) {
                     <option value="Roboto" <?php if ($f_font_family && $_POST['font_family'] == "Roboto") echo "selected";
                     else if (isset ($autenticado) && $autenticado->tipo_letra == "Roboto") echo "selected"; ?>
                             >Roboto</option>
-                    <option value="Maven Pro" <?php if ($f_font_family && $_POST['font_family'] == "Maven Pro") echo "selected";
-                    else if (isset ($autenticado) && $autenticado->tipo_letra == "Maven Pro") echo "selected"; ?>
-                            >Maven Pro</option>
+                    <option value="Arial" <?php if ($f_font_family && $_POST['font_family'] == "Arial") echo "selected";
+                    else if (isset ($autenticado) && $autenticado->tipo_letra == "Arial") echo "selected"; ?>
+                            >Arial</option>
                 </select>
             <!-- Error -->
             <?php if (isset($_POST['modify']) && !$f_font_family) echo "<span>Seleccione un tipo de letra!</span>"; ?>                

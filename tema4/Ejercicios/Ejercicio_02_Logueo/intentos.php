@@ -1,9 +1,3 @@
-<?php
-if (!isset($_SESSION['credenciales'])) {
-    header("Location:index.php");
-    exit();
-}
-?>
 <html>
     <head>
         <title>Ejercicio 02: Logueo - Intentos</title>
