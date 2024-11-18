@@ -7,7 +7,7 @@ if (isset($_POST['exit']) && isset($_SESSION['credenciales'])) {
     // Cerramos la sesión actual.
     session_unset();
     session_destroy();
-    setcookie("PHPSESSID", "", time()-3600); // Eliminación en el cliente.
+    setcookie("PHPSESSID", "", time()-3600, "/"); // Eliminación en el cliente.
     // Realizamos la redirección a index.
     header("Location:index.php");
     exit();

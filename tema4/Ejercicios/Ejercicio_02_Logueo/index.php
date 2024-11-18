@@ -8,8 +8,6 @@
 ini_set("session.gc_maxlifetime", 1800);
 // Establece un tiempo de expiración de 1800 segundos para la cookie de sesión.
 session_set_cookie_params(1800);
-// Creamos una sesión para conservar los datos necesarios.
-session_start();
 
 // Si existe una sesión Credenciales, redirigimos a inicio.php
 if (isset($_SESSION['credenciales'])) {
@@ -56,6 +54,8 @@ if (isset($_POST['login'])) {
                 // Comprobamos si las claves coinciden. Para ello,
                 // desencriptamos la clave del registro.
                 if (password_verify($_POST['pwd'], $registro->pass)) {
+                    // Creamos una sesión para conservar los datos necesarios.
+                    session_start();
                     // En caso de autenticación, guardamos toda la información
                     // del registro (datos del usuario) en la sesión actual.
                     $_SESSION['credenciales'] = $registro;
