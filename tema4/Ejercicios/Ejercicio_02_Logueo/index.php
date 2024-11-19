@@ -29,6 +29,8 @@ if (isset($_COOKIE['intentos']) && $_COOKIE['intentos'] == 0) {
 
 // Banderas de validación.
 $f_user=false; $f_pwd=false; $f_main=false;
+// Bandera error credenciales.
+$errorLogin=false;
 
 // Si pulsamos sobre el botón Entrar.
 if (isset($_POST['login'])) {
@@ -65,23 +67,13 @@ if (isset($_POST['login'])) {
                     header("Location:inicio.php");
                     exit();
                 } else {
-                    // Mensaje de error.
-                    $msg = "<br><br><span style='color:red'>USUARIO O CLAVE INCORRECTA!</span>";
-                    // Restamos un intento a la cookie Intentos.
-                    $valor_actual = $_COOKIE['intentos'] - 1;
-                    // Comprobamos el número de intentos.
-                    if ($valor_actual <= 0) {
-                        setcookie("intentos", "0", time()+30);
-                        // Realizamos una redirección.
-                        header("Location:intentos.php");
-                        exit();
-                    } else {
-                        setcookie("intentos", $valor_actual);
-                        // Mensaje de intentos.
-                        $msg_intentos = "<span style='font-weight:bold'>Te quedan $valor_actual intentos!</span>";
-                    }
+                    $errorLogin = true;
                 }
             } else {
+                $errorLogin = true;
+            }
+            // Mensaje de error de credenciales y comprobación de intentos.
+            if ($errorLogin) {
                 // Mensaje de error.
                 $msg = "<br><br><span style='color:red'>USUARIO O CLAVE INCORRECTA!</span>";
                 // Restamos un intento a la cookie Intentos.
