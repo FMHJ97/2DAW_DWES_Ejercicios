@@ -49,7 +49,7 @@ if (!isset($_SESSION['credenciales'])) {
         <?php
         // Realizamos un bucle for-each para sacar todos los datos del usuario.
         foreach ($autenticado as $key => $value) {
-            echo "<p>$key: $value</p>";
+            if ($key != "pass") echo "<p>$key: $value</p>";
         }
         ?>
         <form action="" method="POST">
