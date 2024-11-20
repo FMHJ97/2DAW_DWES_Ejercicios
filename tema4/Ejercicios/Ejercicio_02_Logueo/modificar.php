@@ -29,8 +29,7 @@ if (!isset($_SESSION['credenciales'])) {
 
 // Banderas de validación.
 $f_name=false; $f_surname=false; $f_address=false; $f_city=false; $f_user=false;
-$f_pwd=false; $f_rep_pwd=false; $f_same_pwd=false; $f_letter_color=false;
-$f_bg_color=false; $f_font_family=false; $f_font_size=false;
+$f_pwd=false; $f_rep_pwd=false; $f_same_pwd=false;
 $f_main=false; // Bandera principal.
 
 // Si pulsamos sobre el botón Modificar.
@@ -45,13 +44,8 @@ if (isset($_POST['modify'])) {
     if (!empty($_POST['rep_pwd'])) $f_rep_pwd=true;
     // Comprobamos si los valores introducidos en los campos de clave son iguales.
     if (strcmp($_POST['pwd'], $_POST['rep_pwd']) === 0) $f_same_pwd=true;
-    if (isset($_POST['letter_color'])) $f_letter_color=true;
-    if (isset($_POST['bg_color'])) $f_bg_color=true;
-    if (isset($_POST['font_family'])) $f_font_family=true;
-    if (isset($_POST['font_size'])) $f_font_size=true;
     // Bandera de validación principal.
-    if ($f_name && $f_surname && $f_address && $f_city && $f_pwd && $f_rep_pwd && $f_same_pwd
-            && $f_letter_color && $f_bg_color && $f_font_family && $f_font_size) {
+    if ($f_name && $f_surname && $f_address && $f_city && $f_pwd && $f_rep_pwd && $f_same_pwd) {
         $f_main=true;
     }
     
@@ -159,78 +153,70 @@ if (isset($_POST['modify'])) {
             <!-- Color Letra Selector -->
             <p>Color de letra:
                 <select name="letter_color">
-                    <option value="white" <?php if ($f_letter_color && $_POST['letter_color'] == "white") echo "selected";
+                    <option value="white" <?php if (isset($_POST['modify']) && $_POST['letter_color'] == "white") echo "selected";
                     else if (isset ($autenticado) && $autenticado->color_letra == "white") echo "selected"; ?>
                             >White</option>
-                    <option value="black" <?php if ($f_letter_color && $_POST['letter_color'] == "black") echo "selected";
+                    <option value="black" <?php if (isset($_POST['modify']) && $_POST['letter_color'] == "black") echo "selected";
                     else if (isset ($autenticado) && $autenticado->color_letra == "black") echo "selected"; ?>
                             >Black</option>
-                    <option value="blue" <?php if ($f_letter_color && $_POST['letter_color'] == "blue") echo "selected";
+                    <option value="blue" <?php if (isset($_POST['modify']) && $_POST['letter_color'] == "blue") echo "selected";
                     else if (isset ($autenticado) && $autenticado->color_letra == "blue") echo "selected"; ?>
                             >Blue</option>
-                    <option value="red" <?php if ($f_letter_color && $_POST['letter_color'] == "red") echo "selected";
+                    <option value="red" <?php if (isset($_POST['modify']) && $_POST['letter_color'] == "red") echo "selected";
                     else if (isset ($autenticado) && $autenticado->color_letra == "red") echo "selected"; ?>
                             >Red</option>
                 </select>
-            <!-- Error -->
-            <?php if (isset($_POST['modify']) && !$f_letter_color) echo "<span>Seleccione un color de letra!</span>"; ?>
             </p>
             <!-- Color Fondo Selector -->
             <p>Color de fondo:
                 <select name="bg_color">
-                    <option value="black" <?php if ($f_bg_color && $_POST['bg_color'] == "black") echo "selected";
+                    <option value="black" <?php if (isset($_POST['modify']) && $_POST['bg_color'] == "black") echo "selected";
                     else if (isset ($autenticado) && $autenticado->color_fondo == "black") echo "selected"; ?>
                             >Black</option>
-                    <option value="white" <?php if ($f_bg_color && $_POST['bg_color'] == "white") echo "selected";
+                    <option value="white" <?php if (isset($_POST['modify']) && $_POST['bg_color'] == "white") echo "selected";
                     else if (isset ($autenticado) && $autenticado->color_fondo == "white") echo "selected"; ?>
                             >White</option>
-                    <option value="yellow" <?php if ($f_bg_color && $_POST['bg_color'] == "yellow") echo "selected";
+                    <option value="yellow" <?php if (isset($_POST['modify']) && $_POST['bg_color'] == "yellow") echo "selected";
                     else if (isset ($autenticado) && $autenticado->color_fondo == "yellow") echo "selected"; ?>
                             >Yellow</option>
-                    <option value="green" <?php if ($f_bg_color && $_POST['bg_color'] === "green") echo "selected";
+                    <option value="green" <?php if (isset($_POST['modify']) && $_POST['bg_color'] == "green") echo "selected";
                     else if (isset ($autenticado) && $autenticado->color_fondo == "green") echo "selected"; ?>
                             >Green</option>
                 </select>
-            <!-- Error -->
-            <?php if (isset($_POST['modify']) && !$f_bg_color) echo "<span>Seleccione un color de fondo!</span>"; ?>                
             </p>
             <!-- Tipo Letra Selector -->
             <p>Tipo de letra:
                 <select name="font_family">
-                    <option value="Times New Roman" <?php if ($f_font_family && $_POST['font_family'] == "Times New Roman") echo "selected";
+                    <option value="Times New Roman" <?php if (isset($_POST['modify']) && $_POST['font_family'] == "Times New Roman") echo "selected";
                     else if (isset ($autenticado) && $autenticado->tipo_letra == "Times New Roman") echo "selected"; ?>
                             >Times New Roman</option>
-                    <option value="Verdana" <?php if ($f_font_family && $_POST['font_family'] == "Verdana") echo "selected";
+                    <option value="Verdana" <?php if (isset($_POST['modify']) && $_POST['font_family'] == "Verdana") echo "selected";
                     else if (isset ($autenticado) && $autenticado->tipo_letra == "Verdana") echo "selected"; ?>
                             >Verdana</option>
-                    <option value="Roboto" <?php if ($f_font_family && $_POST['font_family'] == "Roboto") echo "selected";
+                    <option value="Roboto" <?php if (isset($_POST['modify']) && $_POST['font_family'] == "Roboto") echo "selected";
                     else if (isset ($autenticado) && $autenticado->tipo_letra == "Roboto") echo "selected"; ?>
                             >Roboto</option>
-                    <option value="Arial" <?php if ($f_font_family && $_POST['font_family'] == "Arial") echo "selected";
+                    <option value="Arial" <?php if (isset($_POST['modify']) && $_POST['font_family'] == "Arial") echo "selected";
                     else if (isset ($autenticado) && $autenticado->tipo_letra == "Arial") echo "selected"; ?>
                             >Arial</option>
                 </select>
-            <!-- Error -->
-            <?php if (isset($_POST['modify']) && !$f_font_family) echo "<span>Seleccione un tipo de letra!</span>"; ?>                
             </p>
             <!-- Tamaño Letra Selector -->
             <p>Tamaño de letra:
                 <select name="font_size">
-                    <option value="16" <?php if ($f_font_size && $_POST['font_size'] == 16) echo "selected";
+                    <option value="16" <?php if (isset($_POST['modify']) && $_POST['font_size'] == 16) echo "selected";
                     else if (isset ($autenticado) && $autenticado->tam_letra == 16) echo "selected"; ?>
                             >16px</option>
-                    <option value="20" <?php if ($f_font_size && $_POST['font_size'] == 20) echo "selected";
+                    <option value="20" <?php if (isset($_POST['modify']) && $_POST['font_size'] == 20) echo "selected";
                     else if (isset ($autenticado) && $autenticado->tam_letra == 20) echo "selected"; ?>
                             >20px</option>
-                    <option value="22" <?php if ($f_font_size && $_POST['font_size'] == 22) echo "selected";
+                    <option value="22" <?php if (isset($_POST['modify']) && $_POST['font_size'] == 22) echo "selected";
                     else if (isset ($autenticado) && $autenticado->tam_letra == 22) echo "selected"; ?>
                             >22px</option>
-                    <option value="24" <?php if ($f_font_size && $_POST['font_size'] == 24) echo "selected";
+                    <option value="24" <?php if (isset($_POST['modify']) && $_POST['font_size'] == 24) echo "selected";
                     else if (isset ($autenticado) && $autenticado->tam_letra == 24) echo "selected"; ?>
                             >24px</option>
                 </select>
-            <!-- Error -->
-            <?php if (isset($_POST['modify']) && !$f_font_size) echo "<span>Seleccione un tamaño de letra!</span>"; ?>                                
             </p>
             <input type="submit" name="modify" value="Modificar">
             <input type="submit" name="back" value="Volver">

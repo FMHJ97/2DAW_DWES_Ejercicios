@@ -9,7 +9,7 @@ if (isset($_SESSION['credenciales'])) {
 }
 
 // Creamos una cookie para los intentos.
-if (!isset($_COOKIE['intentos'])) setcookie("intentos", "3");
+if (!isset($_COOKIE['intentos'])) setcookie("intentos", 3);
 
 // Si el valor de la cookie Intentos es igual a 0, redirigimos.
 if (isset($_COOKIE['intentos']) && $_COOKIE['intentos'] == 0) {
