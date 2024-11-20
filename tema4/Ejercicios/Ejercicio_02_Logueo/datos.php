@@ -1,6 +1,6 @@
 <?php
-// Propagamos la sesión.
-session_start();
+// Propago la sesión si existe la cookie PHPSESSID.
+if (isset($_COOKIE['PHPSESSID'])) session_start ();
 
 // Si pulsamos sobre el botón Salir.
 if (isset($_POST['exit']) && isset($_SESSION['credenciales'])) {
