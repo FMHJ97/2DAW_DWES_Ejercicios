@@ -2,6 +2,8 @@
 
 // Importamos la clase Persona.
 require_once './clases/Persona.php';
+// Importamos la clase Empleado.
+require_once './clases/Empleado.php';
 
 // Inicializamos una clase Persona.
 $p = new Persona("Salazar", "Cortés", 32);
@@ -98,5 +100,14 @@ echo "<br><br>".$p4."<br>";
 
 $p4->modificar("Julio","Campos","32");
 echo "<br><br>".$p4."<br>";
+
+
+echo "<br><br><============== HERENCIA ==============><br><br>";
+
+$emp = new Empleado("Paco", "Campos", 50, 1900);
+
+// Los métodos mágicos no se heredan, por lo que habrá que crearlos.
+
+echo "Soy $emp->nombre y cobro $emp->salario";
 
 ?>

@@ -1,12 +1,12 @@
 <?php
 
 class Persona {
-    public $nombre;
-    public $apellidos;
-    public $edad;
+    protected $nombre;
+    protected $apellidos;
+    protected $edad;
     // Propiedad estática que pertenece a la clase, no a la instancia de la clase.
     // Para llamar a dicha propiedad, hacemos uso de self.
-    public static $num_person=0;
+    protected static $num_person=0;
     
     // Constructor de la clase.
     // Solo puede existir un constructor por clase.
