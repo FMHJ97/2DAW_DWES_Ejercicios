@@ -107,7 +107,9 @@ echo "<br><br><============== HERENCIA ==============><br><br>";
 $emp = new Empleado("Paco", "Campos", 50, 1900);
 
 // Los métodos mágicos no se heredan, por lo que habrá que crearlos.
+// En Empleado, creamos los métodos __get() y __set().
 
 echo "Soy $emp->nombre y cobro $emp->salario";
+echo "<br><br>$emp";
 
 ?>

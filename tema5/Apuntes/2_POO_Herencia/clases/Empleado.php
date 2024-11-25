@@ -34,7 +34,12 @@ class Empleado extends Persona {
      */
     public function __set(string $name, mixed $value): void {
         $this->$name = $value;
-    }    
+    }
+    
+    // Override del método __toString() de la clase padre.
+    public function __toString(): string {
+        return parent::__toString()." Mi salario es de ".$this->salario;
+    }
 }
 
 ?>
