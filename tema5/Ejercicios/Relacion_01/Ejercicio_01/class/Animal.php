@@ -1,10 +1,10 @@
 <?php 
 
-abstract class Animal {
+class Animal {
     // Propiedades.
-    protected $nombre;
-    protected $num_patas;
-    protected $pelaje;
+    public $nombre;
+    public $num_patas;
+    public $pelaje;
     
     // Constructor.
     public function __construct($nombre, $num_patas, $pelaje) {
@@ -14,7 +14,9 @@ abstract class Animal {
     }
     
     // Métodos.
-    abstract public function emitirSonido();
+    public function emitirSonido() {
+        echo $this->nombre . " emite un sonido.";
+    }
     
     // Métodos mágicos.
     public function __toString(): string {

@@ -9,6 +9,8 @@
             <p>Nombre: <input type="text" name="nombre"></p>
             <p>Precio: <input type="text" name="precio"></p>
             <button type="submit" name="insertar">Insertar</button>
+            <button type="submit" name="mostrar">Mostrar</button>
+            <button type="submit" name="buscar">Buscar</button>
         </form>
     </body>
 </html>
@@ -23,6 +25,21 @@ require_once './Producto.php';
 //$p2 = new Producto();
 //$p2->nuevoProducto("pantalon01", "Pantalón vaquero", 30);
 //echo $p2."<br>";
+
+if (isset($_POST['buscar'])) {
+    if ($producto = Producto::buscarProducto($_POST['codigo'])) echo $producto;
+    else echo "No existe un producto con dicho código en la BD!";
+}
+
+if (isset($_POST['mostrar'])) {
+    if ($productos = Producto::recuperarTodos()) {
+        foreach ($productos as $producto) {
+            echo $producto."<br>";
+        }
+    } else {
+        echo "No hay productos en la BD!";
+    }
+}
 
 if (isset($_POST['insertar'])) {
     // Vamos a crear un producto con los datos del formulario.

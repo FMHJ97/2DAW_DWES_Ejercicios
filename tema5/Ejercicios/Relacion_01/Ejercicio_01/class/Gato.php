@@ -1,6 +1,6 @@
 <?php
 // Importamos la clase Mamifiero.
-require_once './Mamifero.php';
+require_once 'Mamifero.php';
 
 class Gato extends Mamifero {
     private $ratones_cazados;

@@ -3,7 +3,7 @@
 require_once 'Animal.php';
 
 class Mamifero extends Animal {
-    protected $sexo; 
+    public $sexo; 
             
     // Constructor.
     public function __construct($nombre, $num_patas, $pelaje, $sexo) {
@@ -12,12 +12,11 @@ class Mamifero extends Animal {
     }
     
     // Métodos.
-    protected function correr() {
+    public function correr() {
         echo $this->nombre . " ha empezado a correr.";
     }
 
-    // Método heredado (abstracto)
-    protected function emitirSonido() {
+    public function emitirSonido() {
         echo $this->nombre . " emite un sonido.";
     }
     
