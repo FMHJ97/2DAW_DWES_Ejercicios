@@ -6,6 +6,7 @@ class Alquiler {
     private $dni_cliente;
     private $fecha_alquiler;
     private $fecha_devol;
+    private $precio;
     
     /**
      * 
@@ -14,13 +15,15 @@ class Alquiler {
      * @param type $dni_cliente
      * @param type $fecha_alquiler
      * @param type $fecha_devol
+     * @param type $precio
      */
-    public function __construct($id="", $cod_juego="", $dni_cliente="", $fecha_alquiler="", $fecha_devol="") {
+    public function __construct($id="", $cod_juego="", $dni_cliente="", $fecha_alquiler="", $fecha_devol="", $precio="") {
         $this->id = $id;
         $this->cod_juego = $cod_juego;
         $this->dni_cliente = $dni_cliente;
         $this->fecha_alquiler = $fecha_alquiler;
         $this->fecha_devol = $fecha_devol;
+        $this->precio = $precio;
     }
 
     

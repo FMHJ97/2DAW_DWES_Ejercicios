@@ -16,12 +16,6 @@ class Perro extends Mamifero {
         echo $this->nombre . " ha ladrado.";
     }
     
-    public function cazarRatones() {
-        $cazados = random_int(1, 10);
-        echo $this->nombre . " ha cazado " . $cazados . " ratones.";
-        $this->ratones_cazados += $cazados;
-    }
-    
     public function cavar() {
         echo $this->nombre . " ha empezado a cavar.";
     }

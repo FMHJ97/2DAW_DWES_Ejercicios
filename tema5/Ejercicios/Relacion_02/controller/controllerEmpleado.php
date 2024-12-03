@@ -10,7 +10,7 @@ class ControllerEmpleado {
      * @param type $id
      * @return bool
      */
-    public static function findById($id) {
+    public static function findById($id): mixed {
         try {
             $conex = new Conexion();
             $result = $conex->query("SELECT * FROM empleados WHERE email = '$id'");
