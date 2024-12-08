@@ -4,7 +4,55 @@ require_once 'conexion.php';
 require_once '../model/juego.php';
 
 class ControllerJuego {
-    
+
+    /**
+     * 
+     * @param type $dni_cliente
+     * @return bool
+     */
+    public static function getJuegosNoAlquiladosByCliente($dni_cliente) {
+        try {
+            $conex = new Conexion();
+            $result = $conex->query("SELECT * FROM juegos WHERE Codigo NOT IN (SELECT Cod_juego
+                FROM alquiler WHERE DNI_cliente = '$dni_cliente')");
+            if ($result->num_rows) {
+                while ($fila = $result->fetch_object()) {
+                    $juego = new Juego($fila->Codigo, $fila->Nombre_juego, $fila->Nombre_consola, $fila->Anno, $fila->Precio, $fila->Alguilado, $fila->Imagen, $fila->descripcion);
+                    $juegos[] = $juego;
+                }
+            } else {
+                $juegos = false;
+            }
+            $conex->close();
+            return $juegos;
+        } catch (Exception $ex) {
+            die("ERROR en la BD! " . $ex->getMessage());
+        }
+    }
+
+    /**
+     * 
+     * @return bool
+     */
+    public static function getJuegosNoAlquilados() {
+        try {
+            $conex = new Conexion();
+            $result = $conex->query("SELECT * FROM juegos WHERE Alguilado = 'NO'");
+            if ($result->num_rows) {
+                while ($fila = $result->fetch_object()) {
+                    $juego = new Juego($fila->Codigo, $fila->Nombre_juego, $fila->Nombre_consola, $fila->Anno, $fila->Precio, $fila->Alguilado, $fila->Imagen, $fila->descripcion);
+                    $juegos[] = $juego;
+                }
+            } else {
+                $juegos = false;
+            }
+            $conex->close();
+            return $juegos;
+        } catch (Exception $ex) {
+            die("ERROR en la BD! " . $ex->getMessage());
+        }
+    }
+
     /**
      * 
      * @param type $cod_juego

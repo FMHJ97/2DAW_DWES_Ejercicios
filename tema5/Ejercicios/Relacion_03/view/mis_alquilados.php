@@ -151,6 +151,8 @@ function showAlquileresActivos($alquileres) {
             echo "</td>";
             echo "</tr>";
         }
+    } ELSE {
+        echo "NO HAY JUEGOS ALQUILADOS POR ESTE CLIENTE EN LA BD!";
     }
 }
 ?>
