@@ -85,7 +85,7 @@ if (isset($autenticado) && isset($_POST['logout'])) {
                 </div>
             </div>
             <?php ?>
-            <div class="row">
+            <div class="row row-cols-4">
                 <?php
                 // Mostramos las carátulas de todos los juegos.
                 showAllGames(ControllerJuego::getAll());
@@ -101,8 +101,9 @@ if (isset($autenticado) && isset($_POST['logout'])) {
  * 
  */
 function showAllGames($juegos) {
+    if ($juegos)
     foreach ($juegos as $juego) {
-        echo "<div class='col'>";
+        echo "<div class='col mb-4'>";
         echo "<form action='ficha_juego.php' method='POST'>";
         echo "<input type='hidden' name='cod_juego' value='$juego->codigo'>";
         echo "<input type='image' src='$juego->imagen' weight='200px' height='250px'>";

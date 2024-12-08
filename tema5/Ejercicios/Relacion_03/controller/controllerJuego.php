@@ -4,6 +4,116 @@ require_once 'conexion.php';
 require_once '../model/juego.php';
 
 class ControllerJuego {
+    
+    /**
+     * 
+     * @param type $cod_juego
+     * @return type
+     */
+    public static function liberarJuego($cod_juego) {
+        try {
+            $conex = new Conexion();
+            $result = $conex->query("UPDATE juegos SET Alguilado = 'NO' WHERE Codigo = '$cod_juego'");
+            $filas = $conex->affected_rows;
+            $conex->close();
+            return $filas;
+        } catch (Exception $ex) {
+            echo $ex->getMessage();
+        }
+    }
+
+    /**
+     * 
+     * @param type $nombre_juego
+     * @param type $nombre_consola
+     * @return string
+     */
+    public static function generateCodigoJuego($nombre_juego, $nombre_consola) {
+        // Obtenemos las palabras del nombre.
+        $palabras = explode(' ', $nombre_juego);
+        $siglas = "";
+
+        // Recorremos cada palabra y guardamos la primera letra.
+        foreach ($palabras as $palabra) {
+            $siglas .= $palabra[0];
+        }
+
+        // Concatenamos las siglas con el nombre de la consola.
+        $codigo_juego = $siglas . '-' . $nombre_consola;
+
+        // Devolvemos el código.
+        return $codigo_juego;
+    }
+
+    /**
+     * 
+     * @param type $id_registro
+     * @param Juego $j
+     * @return mixed
+     */
+    public static function updateJuego($id_registro, Juego $j): mixed {
+        try {
+            $conex = new Conexion();
+            $conex->query("UPDATE juegos SET Nombre_juego='$j->nombre_juego',Nombre_consola='$j->nombre_consola',Anno='$j->anio',Precio='$j->precio',Alguilado='$j->alquilado',Imagen='$j->imagen',descripcion='$j->descripcion'"
+                    . " WHERE Codigo = '$id_registro'");
+            $filas = $conex->affected_rows;
+            $conex->close();
+            return $filas;
+        } catch (Exception $ex) {
+            die("ERROR EN LA BD! => " . $ex->getMessage());
+        }
+    }
+
+    /**
+     * 
+     * @param type $codigo
+     * @return mixed
+     */
+    public static function deleteJuego($codigo): mixed {
+        try {
+            $conex = new Conexion();
+            $conex->query("DELETE FROM juegos WHERE Codigo = '$codigo'");
+            $filas = $conex->affected_rows;
+            $conex->close();
+            return $filas;
+        } catch (Exception $ex) {
+            die("ERROR EN LA BD! => " . $ex->getMessage());
+        }
+    }
+
+    /**
+     * 
+     * @param Juego $j
+     * @return mixed
+     */
+    public static function insertJuego(Juego $j): mixed {
+        try {
+            $conex = new Conexion();
+            $conex->query("INSERT INTO juegos VALUES ('$j->codigo','$j->nombre_juego','$j->nombre_consola','$j->anio',$j->precio,'$j->alquilado','$j->imagen','$j->descripcion')");
+            $filas = $conex->affected_rows;
+            $conex->close();
+            return $filas;
+        } catch (Exception $ex) {
+            die("ERROR EN LA BD! => " . $ex->getMessage());
+        }
+    }
+
+    /**
+     * 
+     * @param type $cod_juego
+     * @return bool
+     */
+    public static function rentJuego($cod_juego) {
+        try {
+            $conex = new Conexion();
+            $result = $conex->query("UPDATE juegos SET Alguilado = 'SI' WHERE Codigo = '$cod_juego'");
+            $filas = $conex->affected_rows;
+            $conex->close();
+            return $filas;
+        } catch (Exception $ex) {
+            echo $ex->getMessage();
+        }
+    }
 
     /**
      * 

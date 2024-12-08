@@ -24,8 +24,8 @@ class ControllerCliente {
                     $datos['user'], $datos['name'], $datos['surname'], $datos['address'], $datos['city'], $clave, $tipo);
 
             // Ejecutamos.
-            if ($stmt->execute())
-                $result = true;
+            if ($stmt->execute()) 
+                $filas = $conex->affected_rows;
             $stmt->close();
             $conex->close();
         } catch (Exception $ex) {
@@ -34,9 +34,9 @@ class ControllerCliente {
             } else {
                 echo("ERROR en la BD! " . $ex->getMessage());
             }
-            $result = false;
+            $filas = false;
         }
-        return $result;
+        return $filas;
     }
 
     /**

@@ -30,7 +30,7 @@ if (isset($_POST['register'])) {
         $datos['pwd'] = $_POST['pwd'];
         
         // Procedemos a insertar el nuevo Cliente.
-        if (ControllerCliente::insertCliente($datos)) {
+        if (ControllerCliente::insertCliente($datos) > 0) {
             // Obtenemos el registro creado.
             $cliente = ControllerCliente::getClienteById($datos['user']);
             
