@@ -7,6 +7,26 @@ class ControllerTarea {
     
     /**
      * 
+     * @param Tarea $t
+     * @return mixed
+     */
+    public static function insertar(Tarea $t): mixed {
+        try {
+            $conex = new Conexion();
+            $conex->query("INSERT INTO tareas (nombre,fecha_inicio,fecha_fin) VALUES ('$t->nombre','$t->fecha_inicio','$t->fecha_fin')");
+            if ($conex->affected_rows > 0) {
+                // Obtiene el ID de la tarea recién creada
+                $id_tarea = $conex->insert_id;
+            }
+            $conex->close();
+            return $id_tarea;
+        } catch (Exception $ex) {
+            die("ERROR EN LA BD! => " . $ex->getMessage());
+        }
+    }
+    
+    /**
+     * 
      * @param type $id
      * @return bool
      */

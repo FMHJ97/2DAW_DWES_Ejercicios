@@ -3,19 +3,34 @@ require_once '../controller/conexion.php';
 require_once '../controller/controllerEmpleado.php';
 require_once '../model/empleado.php';
 
+// Propago la sesión si existe la cookie PHPSESSID.
+if (isset($_COOKIE['PHPSESSID'])) session_start();
+
+// Si existe una sesión Logueado, redirigimos a inicio.php
+if (isset($_SESSION['logueado'])) {
+    header("Location:inicio.php");
+    exit();
+}
+
 if (isset($_POST['login'])) {
     if (!empty($_POST['email']) && !empty($_POST['pwd'])) {
-        $emp = ControllerEmpleado::verifyEmpleado($_POST['email'], $_POST['pwd']);
-        if ($emp) {
+        // Obtenemos el posible empleado.
+        $emp = ControllerEmpleado::findById($_POST['email']);
+        // Cotejamos la contraseña introducida con la establecida en el registro.
+        if ($emp && verifyPassword($emp) === 0) {
+            // Abrimos sesión.
             ini_set("session.gc_maxlifetime", 1800);
+            // Establece un tiempo de expiración de 1800 segundos para la cookie de sesión.
             session_set_cookie_params(1800);
             session_start();
-            $_SESSION['autenticado'] = $emp;
+            $_SESSION['logueado'] = $emp;
+
             // Redirigimos a Inicio.
             header("Location:inicio.php");
+            exit();
         } else {
             // Mensaje de error.
-            $msg = "<br><span style='color:red'>USUARIO O CLAVE INCORRECTA!</span>";
+        $msg = "<br><span style='color:red'>USUARIO O CLAVE INCORRECTA!</span>";
         }
     } else {
         // Mensaje de error.
@@ -41,3 +56,22 @@ if (isset($_POST['login'])) {
         <?php if (isset($_POST['login']) && isset($msg)) echo $msg; ?>
     </body>
 </html>
+
+<?php
+
+/**
+ * 
+ * @param type $e
+ * @return bool
+ */
+function verifyPassword($e) {
+    if ($e != null) {
+        $encript = md5($_POST['pwd']);
+        $result = strcasecmp($e->pass, $encript);
+    } else {
+        $result = false;
+    }
+    return $result;
+}
+
+?>
