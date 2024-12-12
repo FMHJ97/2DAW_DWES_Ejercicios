@@ -12,8 +12,8 @@ class ControllerEmpleado {
             $conex = new Conexion();
             $stmt = $conex->prepare("SELECT * FROM empleados WHERE email = ? AND pass = ?");
             $stmt->bind_param('ss', $id, $encript);
-            $stmt->execute();
-            if ($result = $stmt->get_result()) {
+            if ($stmt->execute()) {
+                $result = $stmt->get_result();
                 $fila = $result->fetch_object();
                 $empleado = new Empleado($fila->email, $fila->pass, $fila->nombre, $fila->salario, $fila->departamento);
             } else {
