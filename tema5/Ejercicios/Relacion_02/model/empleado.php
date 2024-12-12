@@ -1,8 +1,8 @@
 <?php
 
 class Empleado {
-    private $email;
-    private $pass;
+    public $email;
+    public $pass;
     private $nombre;
     private $salario;
     private $departamento;
