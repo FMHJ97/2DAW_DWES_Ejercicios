@@ -31,8 +31,14 @@ if (isset($_POST['crear'])) {
         
         // Sacamos a los participantes.
         $participantes = $_POST['participantes'];
+        // Agregamos al empleado logueado.
+        $participantes[] = $autenticado->email;
+        
         // Insertamos en tabla realiza los participantes de dicha tarea.
         ControllerRealiza::insertRealiza($id_tarea, $participantes);
+        
+        // Redirigimos.
+        header("Location:inicio.php");
     }
 }
 
@@ -47,6 +53,7 @@ $empleados = ControllerEmpleado::getAll();
     </head>
     <body>
         <h1>Nueva tarea</h1>
+        <p>Bienvenido, <?php echo isset($autenticado)?$autenticado->nombre:""; ?></p>
         <form action="" method="POST">
             <p>Nombre: <input type="text" name="nombre"></p>
             <p>Fecha inicio: <input type="date" name="fecha_inicio"></p>
@@ -67,5 +74,6 @@ $empleados = ControllerEmpleado::getAll();
             </p>
             <button type="submit" name="crear">Crear tarea</button>
         </form>
+        <a href="inicio.php"><button>Volver</button></a>
     </body>
 </html>

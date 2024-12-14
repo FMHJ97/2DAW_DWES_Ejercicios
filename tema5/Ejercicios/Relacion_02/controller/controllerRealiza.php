@@ -1,9 +1,34 @@
 <?php
 
-require_once 'conexion.php';
+require_once '../controller/conexion.php';
 require_once '../model/realiza.php';
 
 class ControllerRealiza {
+    
+    /**
+     * 
+     * @param String $email
+     * @param int $id_tarea
+     * @param int $horas
+     * @return bool
+     */
+    public static function updateRealiza(String $email, int $id_tarea, int $horas): bool {
+        try {
+            $conex = new Conexion();
+            $sql = "UPDATE realiza SET horas = ? WHERE email = ? AND id_tarea = ?";
+            $stmt = $conex->prepare($sql);
+
+            $stmt->bind_param("isi", $horas, $email, $id_tarea);
+            $stmt->execute();
+
+            $stmt->close();
+            $conex->close();
+
+            return true;
+        } catch (Exception $ex) {
+            die("Error al insertar participantes en la tabla realiza: " . $ex->getMessage());
+        }
+    }
 
     /**
      * 
@@ -49,6 +74,33 @@ class ControllerRealiza {
                 $realiza = false;
             }
             $conex->close();
+            return $realiza;
+        } catch (Exception $ex) {
+            die("ERROR en la BD! => " . $ex->getMessage());
+        }
+    }
+    
+    /**
+     * 
+     * @param type $id_empleado
+     * @return mixed
+     */
+    public static function getAllByEmpleado($id_empleado): mixed {
+        try {
+            $conex = new Conexion();
+            $result = $conex->query("SELECT * FROM realiza WHERE email = '$id_empleado'");
+            if ($result->num_rows) {
+                while ($fila = $result->fetch_object()) {
+                    $rea = new Realiza($fila->email, $fila->id_tarea, $fila->horas);
+                    // Guardamos en array.
+                    $realiza[] = $rea;
+                }
+            } else {
+                $realiza = false;
+            }
+            // Cerramos la conexión.
+            $conex->close();
+            // Devolvemos el resultado.
             return $realiza;
         } catch (Exception $ex) {
             die("ERROR en la BD! => " . $ex->getMessage());

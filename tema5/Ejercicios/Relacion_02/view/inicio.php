@@ -1,4 +1,12 @@
 <?php
+require_once '../controller/conexion.php';
+require_once '../controller/controllerEmpleado.php';
+require_once '../controller/controllerTarea.php';
+require_once '../controller/controllerRealiza.php';
+require_once '../model/empleado.php';
+require_once '../model/tarea.php';
+require_once '../model/realiza.php';
+
 // Propago la sesión si existe la cookie PHPSESSID.
 if (isset($_COOKIE['PHPSESSID'])) session_start();
 
@@ -6,6 +14,8 @@ if (isset($_COOKIE['PHPSESSID'])) session_start();
 if (!isset($_SESSION['logueado'])) {
     header("Location:index.php");
     exit();
+} else {
+    $autenticado = $_SESSION['logueado'];
 }
 
 // Si pulsamos sobre Cerrar sesión.
@@ -26,6 +36,7 @@ if (isset($_POST['logout'])) {
     </head>
     <body>
         <h1>Inicio</h1>
+        <p>Bienvenido, <?php echo isset($autenticado)?$autenticado->nombre:""; ?></p>
         <form action="" method="POST">
             <button type="submit" name="logout">Cerrar sesión</button>
         </form>
